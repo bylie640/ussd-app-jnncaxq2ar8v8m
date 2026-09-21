@@ -1,5 +1,5 @@
 /* Service Worker: оффлайн-кэш, чтобы звонилка работала без интернета */
-var CACHE = 'tel-v6';
+var CACHE = 'tel-v7';
 
 self.addEventListener('install', function (e) {
   e.waitUntil(
