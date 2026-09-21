@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Телефон</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+  :root{
+    --bg:#000000;
+    --surface:#1c1c1f;
+    --surface2:#232327;
+    --text:#f2f2f3;
+    --text-dim:#9e9ea4;
+    --accent:#2a7cff;
+    --green:#3ddc84;
+    --red:#ea4335;
+    --divider:#2a2a2e;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation;}
+  input,textarea{user-select:text;-webkit-user-select:text;}
+  html,body{height:100%;overflow:hidden;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:var(--bg);color:var(--text);
+    display:flex;justify-content:center;
+    overscroll-behavior:none;
+  }
+  #app{
+    width:100%;max-width:480px;height:100dvh;height:100vh;
+    display:flex;flex-direction:column;
+    position:relative;
+  }
+
+  /* ===== Header ===== */
+  header{
+    flex:0 0 auto;padding:calc(env(safe-area-inset-top,0px) + 10px) 12px 4px;
+    display:flex;align-items:center;gap:12px;
+  }
+  #search-pill{
+    flex:1;display:flex;align-items:center;gap:10px;
+    height:46px;background:rgba(255,255,255,0.07);
+    border-radius:24px;padding:0 16px;
+  }
+  #search-pill svg{flex:0 0 auto;opacity:.55;}
+  #search-hint{color:var(--text-dim);font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  #search-input{
+    flex:1;min-width:0;background:transparent;border:none;outline:none;
+    color:var(--text);font-size:15px;display:none;
+  }
+  #search-pill.searchable{cursor:pointer;}
+  #avatar{
+    flex:0 0 auto;width:40px;height:40px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;font-weight:500;color:#fff;
+    background:linear-gradient(135deg,#7e57c2,#4285f4);
+    cursor:pointer;position:relative;
+  }
+
+  /* ===== Tabs ===== */
+  nav#tabs{flex:0 0 auto;display:flex;padding:4px 0 0;}
+  .tab{
+    flex:1;background:none;border:none;color:var(--text-dim);
+    font-size:15px;font-weight:500;padding:12px 0 10px;position:relative;cursor:pointer;
+  }
+  .tab.active{color:var(--text);}
+  .tab.active::after{
+    content:"";position:absolute;left:50%;transform:translateX(-50%);
+    bottom:4px;width:26px;height:3px;border-radius:2px;background:var(--accent);
+  }
+  .tab.pulse::after{background:var(--accent);}
+
+  /* ===== Panels ===== */
+  main{flex:1;min-height:0;display:flex;flex-direction:column;}
+  .panel{flex:1;min-height:0;display:none;flex-direction:column;animation:fade .18s ease;}
+  .panel.active{display:flex;}
+  @keyframes fade{from{opacity:0;}to{opacity:1;}}
+  .list{flex:1;overflow-y:auto;padding:4px 0 24px;}
+  .li{
+    display:flex;align-items:center;gap:14px;padding:11px 16px;cursor:pointer;
+    border-bottom:1px solid var(--divider);
+  }
+  .li:active{background:rgba(255,255,255,.06);}
+  .avatar{
+    width:42px;height:42px;border-radius:50%;flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:16px;font-weight:500;
+  }
+  .li-main{flex:1;min-width:0;}
+  .li-name{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .li-sub{font-size:13px;color:var(--text-dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .li-right{flex:0 0 auto;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-dim);}
+  .call-ico{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+  .empty-pad{flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:14px;}
+
+  /* ===== Dialpad ===== */
+  #dialpad-panel{overflow:hidden;}
+  #number-area{
+    flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;
+    padding:8px 28px 10px;min-height:0;
+  }
+  #number-label{font-size:13px;color:var(--text-dim);margin-bottom:6px;}
+  #number-display{
+    font-size:clamp(26px,7vw,34px);letter-spacing:.5px;max-width:100%;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:42px;text-align:center;
+  }
+  #dialpad-actions{
+    flex:0 0 auto;display:flex;justify-content:center;gap:64px;align-items:center;padding-bottom:8px;
+  }
+  .icon-btn{
+    width:52px;height:52px;border-radius:50%;border:none;background:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;color:var(--text);
+  }
+  .icon-btn svg{opacity:.85;}
+  .icon-btn:active{background:rgba(255,255,255,.1);}
+  #keypad{
+    flex:0 0 auto;display:grid;grid-template-columns:repeat(3,1fr);
+    row-gap:6px;padding:0 20px 2px;
+  }
+  .key{
+    justify-self:center;width:min(19vw,72px);height:min(19vw,72px);border-radius:50%;
+    border:none;background:transparent;color:var(--text);cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+    transition:background .12s;
+  }
+  .key:active{background:rgba(255,255,255,.14);}
+  .k-num{font-size:clamp(24px,6.5vw,28px);font-weight:400;line-height:1;}
+  .k-letters{font-size:9px;letter-spacing:1px;color:var(--text-dim);line-height:1;}
+  #call-row{flex:0 0 auto;display:flex;justify-content:center;padding:12px 0 calc(14px + env(safe-area-inset-bottom,0px));}
+  #btn-call{
+    width:62px;height:62px;border-radius:50%;border:none;cursor:pointer;
+    background:var(--green);display:flex;align-items:center;justify-content:center;
+    box-shadow:0 4px 18px rgba(61,220,132,.28);
+  }
+  #btn-call svg{width:30px;height:30px;fill:#04361d;}
+  #btn-call:active{transform:scale(.94);}
+  #btn-call.ring{box-shadow:0 0 0 12px rgba(61,220,132,.18);}
+
+  /* ===== Overlay bases ===== */
+  .overlay{
+    position:absolute;inset:0;z-index:50;display:none;
+    background:rgba(0,0,0,.45);align-items:center;justify-content:center;padding:24px;
+  }
+  .overlay.show{display:flex;animation:fade .15s ease;}
+  .mat-dialog{
+    width:100%;max-width:320px;background:var(--surface);
+    border-radius:18px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.6);
+    border:1px solid var(--divider);animation:pop .18s ease;
+  }
+  @keyframes pop{from{transform:scale(.94);opacity:0;}to{transform:scale(1);opacity:1;}}
+  .mat-dialog h3{
+    font-size:17px;font-weight:500;padding:18px 20px 6px;text-align:center;
+  }
+  .mat-dialog .body{padding:6px 20px 14px;font-size:15px;color:var(--text);line-height:1.5;text-align:center;white-space:pre-line;word-break:break-word;}
+  .dialog-btns{display:flex;justify-content:center;padding:4px 8px 10px;gap:8px;}
+  .dbtn{
+    min-width:88px;padding:10px 16px;border:none;border-radius:20px;cursor:pointer;
+    font-size:15px;font-weight:500;background:#38383d;color:#c9c9cf;
+  }
+  .dbtn.primary{background:rgba(42,124,255,.22);color:#8ab4f8;}
+  .dbtn.danger{background:rgba(234,67,53,.2);color:#f28b82;}
+  .dbtn:active{filter:brightness(1.3);}
+  .progress{height:3px;background:rgba(255,255,255,.08);position:relative;}
+  .progress .ind{
+    position:absolute;top:0;left:0;height:100%;width:40%;background:var(--accent);
+    animation:slide 1.1s infinite ease-in-out;
+  }
+  @keyframes slide{0%{left:-40%;}100%{left:100%;}}
+
+  /* ===== Call screen ===== */
+  #call-screen{background:#000;}
+  #call-inner{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;position:relative;}
+  #call-avatar{
+    width:118px;height:118px;border-radius:50%;margin-top:calc(env(safe-area-inset-top,0px) + 14vh);
+    display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:500;color:#fff;
+    background:linear-gradient(135deg,#7e57c2,#4285f4);
+    box-shadow:0 0 0 8px rgba(255,255,255,.05);
+  }
+  #call-status{margin-top:26px;font-size:18px;color:var(--text);min-height:26px;}
+  #call-number{margin-top:8px;font-size:26px;letter-spacing:.3px;text-align:center;padding:0 24px;}
+  #call-btns{
+    margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:26px;
+    padding-bottom:calc(34px + env(safe-area-inset-bottom,0px));
+  }
+  .cbtn-row{display:flex;gap:30px;}
+  .cbtn{
+    width:62px;height:62px;border-radius:50%;border:none;background:rgba(255,255,255,.1);
+    color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    position:relative;
+  }
+  .cbtn span{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:6px;font-size:11px;color:var(--text-dim);white-space:nowrap;}
+  .cbtn.on{background:rgba(42,124,255,.85);}
+  .cbtn:active{filter:brightness(1.25);}
+  #cb-hangup{
+    width:64px;height:64px;border-radius:50%;border:none;cursor:pointer;
+    background:var(--red);display:flex;align-items:center;justify-content:center;
+    box-shadow:0 4px 18px rgba(234,67,53,.3);
+  }
+  #cb-hangup svg{width:30px;height:30px;fill:#fff;}
+  #cb-hangup:active{transform:scale(.94);}
+
+  /* ===== Settings ===== */
+  #settings-screen{
+    position:absolute;inset:0;z-index:60;background:var(--bg);
+    display:none;flex-direction:column;animation:fade .18s ease;
+  }
+  #settings-screen.show{display:flex;}
+  .set-top{
+    flex:0 0 auto;display:flex;align-items:center;gap:6px;
+    padding:calc(env(safe-area-inset-top,0px) + 10px) 8px 6px;
+  }
+  .set-top h1{font-size:19px;font-weight:500;flex:1;text-align:center;}
+  .back-btn{
+    width:42px;height:42px;border-radius:50%;border:none;background:none;color:var(--text);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+  }
+  .back-btn:active{background:rgba(255,255,255,.1);}
+  .set-list{flex:1;overflow-y:auto;padding:8px 16px 90px;}
+  .set-group-title{font-size:13px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.6px;margin:18px 4px 6px;}
+  .set-row{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:13px 4px;border-bottom:1px solid var(--divider);
+  }
+  .set-row label{font-size:15px;flex:0 0 auto;}
+  .set-row input, .set-row textarea{
+    font-size:15px;color:var(--text);background:var(--surface2);
+    border:1px solid var(--divider);border-radius:8px;padding:8px 10px;outline:none;
+  }
+  .set-row input{max-width:150px;text-align:right;font-family:inherit;}
+  .set-row textarea{resize:none;}
+  .switch{
+    width:52px;height:30px;border-radius:16px;background:#4a4a50;position:relative;cursor:pointer;flex:0 0 auto;
+    transition:background .2s;
+  }
+  .switch::after{
+    content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;
+    transition:transform .2s;
+  }
+  .switch.on{background:var(--green);}
+  .switch.on::after{transform:translateX(22px);}
+  .set-actions{padding:10px 4px 0;display:flex;gap:12px;}
+  .set-btn{
+    flex:1;padding:13px;border:none;border-radius:23px;cursor:pointer;font-size:15px;font-weight:500;
+    background:rgba(42,124,255,.2);color:#8ab4f8;
+  }
+  .set-btn.ghost{background:rgba(255,255,255,.08);color:#c9c9cf;}
+  .set-btn:active{filter:brightness(1.3);}
+  .set-hint{font-size:12px;color:var(--text-dim);margin-top:10px;line-height:1.5;}
+
+  /* ===== PIN dialog ===== */
+  #pin-input{
+    width:100%;padding:12px;font-size:22px;letter-spacing:6px;text-align:center;
+    background:var(--surface2);border:1px solid var(--divider);border-radius:10px;color:var(--text);outline:none;
+  }
+
+  /* ===== Toast ===== */
+  #toast{
+    position:absolute;left:50%;bottom:calc(48px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);
+    background:#3c4043;color:#fff;font-size:14px;padding:10px 18px;border-radius:22px;
+    z-index:90;opacity:0;pointer-events:none;transition:opacity .25s, transform .25s;white-space:nowrap;max-width:90%;
+  }
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
+
+  .shake{animation:shake .4s ease;}
+  @keyframes shake{
+    10%,90%{transform:translateX(-2px);}20%,80%{transform:translateX(4px);}
+    30%,50%,70%{transform:translateX(-6px);}40%,60%{transform:translateX(6px);}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <header>
+    <div id="search-pill" class="searchable">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="#9e9ea4"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z"/></svg>
+      <span id="search-hint">Поиск людей и номеров</span>
+      <input id="search-input" type="search" placeholder="Поиск людей и номеров" autocomplete="off">
+    </div>
+    <div id="avatar">Т</div>
+  </header>
+
+  <nav id="tabs">
+    <button class="tab" data-tab="recents">Недавние</button>
+    <button class="tab" data-tab="contacts">Контакты</button>
+    <button class="tab active" data-tab="dialpad">Клавиатура</button>
+  </nav>
+
+  <main>
+    <section id="recents-panel" class="panel">
+      <div class="list" id="recents-list"></div>
+    </section>
+
+    <section id="contacts-panel" class="panel">
+      <div class="list" id="contacts-list"></div>
+    </section>
+
+    <section id="dialpad-panel" class="panel active">
+      <div id="number-area">
+        <div id="number-label">Наберите номер</div>
+        <div id="number-display"></div>
+      </div>
+      <div id="dialpad-actions">
+        <button id="btn-add" class="icon-btn" title="Добавить в контакты">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="#9e9ea4"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        </button>
+        <button id="btn-delete" class="icon-btn" title="Удалить">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="#9e9ea4"><path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z"/></svg>
+        </button>
+      </div>
+      <div id="keypad">
+        <button class="key" data-key="1"><span class="k-num">1</span></button>
+        <button class="key" data-key="2"><span class="k-num">2</span><span class="k-letters">ABC</span></button>
+        <button class="key" data-key="3"><span class="k-num">3</span><span class="k-letters">DEF</span></button>
+        <button class="key" data-key="4"><span class="k-num">4</span><span class="k-letters">GHI</span></button>
+        <button class="key" data-key="5"><span class="k-num">5</span><span class="k-letters">JKL</span></button>
+        <button class="key" data-key="6"><span class="k-num">6</span><span class="k-letters">MNO</span></button>
+        <button class="key" data-key="7"><span class="k-num">7</span><span class="k-letters">PQRS</span></button>
+        <button class="key" data-key="8"><span class="k-num">8</span><span class="k-letters">TUV</span></button>
+        <button class="key" data-key="9"><span class="k-num">9</span><span class="k-letters">WXYZ</span></button>
+        <button class="key" data-key="*"><span class="k-num">*</span></button>
+        <button class="key" data-key="0"><span class="k-num">0</span><span class="k-letters">+</span></button>
+        <button class="key" data-key="#"><span class="k-num">#</span></button>
+      </div>
+      <div id="call-row">
+        <button id="btn-call" title="Позвонить">
+          <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- USSD dialog -->
+  <div id="ussd-overlay" class="overlay">
+    <div class="mat-dialog">
+      <h3 id="ussd-title">Запрос USSD</h3>
+      <div class="body" id="ussd-body">Идёт обмен данными с сетью…</div>
+      <div class="dialog-btns">
+        <button class="dbtn" id="ussd-cancel">Отмена</button>
+        <button class="dbtn primary" id="ussd-ok" style="display:none;">OK</button>
+      </div>
+      <div class="progress" id="ussd-progress"><div class="ind"></div></div>
+    </div>
+  </div>
+
+  <!-- Call screen -->
+  <div id="call-screen" class="overlay">
+    <div id="call-inner">
+      <div id="call-avatar">Т</div>
+      <div id="call-status">Вызов…</div>
+      <div id="call-number"></div>
+      <div id="call-btns">
+        <div class="cbtn-row">
+          <button class="cbtn" id="cb-mute"><svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg><span>Откл. звук</span></button>
+          <button class="cbtn" id="cb-keypad"><svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-2v2h2V8zm-4 0h-2v2h2V8zm-4 0H8v2h2V8zM6 8H4v2h2V8zm12 4h-2v2h2v-2zm-4 0h-2v2h2v-2zm-4 0H8v2h2v-2zm-4 0H4v2h2v-2zm12 4h-2v2h2v-2zm-4 0h-2v2h2v-2zm-4 0H8v2h2v-2zm-4 0H4v2h2v-2zM12 3C7.03 3 3 7.03 3 12s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9z"/></svg><span>Клавиатура</span></button>
+          <button class="cbtn" id="cb-speaker"><svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg><span>Динамик</span></button>
+        </div>
+        <div class="cbtn-row">
+          <button class="cbtn" id="cb-hold"><svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg><span>Удержание</span></button>
+          <button class="cbtn" id="cb-more"><svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg><span>Ещё</span></button>
+        </div>
+        <button id="cb-hangup"><svg viewBox="0 0 24 24"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.7l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.51-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg></button>
+        </div>
+      <div style="height:20px"></div>
+    </div>
+  </div>
+
+  <!-- Settings -->
+  <div id="settings-screen">
+    <div class="set-top">
+      <button class="back-btn" id="set-back"><svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
+      <h1>Скрытые настройки</h1>
+      <div style="width:42px"></div>
+    </div>
+    <div class="set-list">
+      <div class="set-group-title">Результат запроса</div>
+      <div class="set-row">
+        <label>Код USSD</label>
+        <input id="set-code" type="text" placeholder="*147#">
+      </div>
+      <div class="set-row">
+        <label>Задержка (сек)</label>
+        <input id="set-delay" type="number" min="1" max="30">
+      </div>
+      <div class="set-row">
+        <label>Текст ответа</label>
+      </div>
+      <div class="set-row" style="align-items:stretch;flex-direction:column;border:none;">
+        <textarea id="set-msg" rows="5" style="width:100%;"></textarea>
+      </div>
+      <div class="set-group-title">Доступ</div>
+      <div class="set-row">
+        <label>PIN-код входа</label>
+        <input id="set-pin" type="text" inputmode="numeric" maxlength="8">
+      </div>
+      <div class="set-group-title">Поведение</div>
+      <div class="set-row">
+        <label>Звук клавиш</label>
+        <div class="switch" id="set-sound"></div>
+      </div>
+      <div class="set-row">
+        <label>Вибрация</label>
+        <div class="switch" id="set-vibrate"></div>
+      </div>
+      <div class="set-row">
+        <label>Название</label>
+        <input id="set-name" type="text" maxlength="16">
+      </div>
+      <div class="set-actions">
+        <button class="set-btn ghost" id="set-reset">Сбросить</button>
+        <button class="set-btn" id="set-save">Сохранить</button>
+      </div>
+      <p class="set-hint">Вход в настройки: долгое нажатие на поиск вверху.<br>PIN по умолчанию: 0000.</p>
+    </div>
+  </div>
+
+  <!-- PIN -->
+  <div id="pin-overlay" class="overlay">
+    <div class="mat-dialog">
+      <h3>Введите PIN</h3>
+      <div class="body" style="padding-bottom:10px;">
+        <input id="pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off">
+      </div>
+      <div class="dialog-btns">
+        <button class="dbtn" id="pin-cancel">Отмена</button>
+        <button class="dbtn primary" id="pin-ok">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+</div>
+
+<script>
+'use strict';
+/* ============ Хранилище (сохраняется между сеансами) ============ */
+var store = {
+  get: function(k){ try { return localStorage.getItem('ussd.' + k); } catch(e){ return null; } },
+  set: function(k, v){ try { localStorage.setItem('ussd.' + k, String(v)); } catch(e){} }
+};
+var DEFAULTS = {
+  ussd_code:  '*147#',
+  ussd_message:'Услуга успешно активирована.\nВаш тариф: «Максимум»\nЛимит интернета: 50 ГБ\nБаланс: 245,50 ₽',
+  ussd_delay: '3',
+  pin:        '0000',
+  sound:      '1',
+  vibrate:    '1',
+  app_name:   'Телефон'
+};
+var S = {};
+
+/* ============ Состояние ============ */
+var typed = '';
+var currentTab = 'dialpad';
+var ussdOpen = false;
+var ussdTimer = null;
+var callActive = false;
+var callTimerInt = null;
+var callSec = 0;
+var callRaw = '';
+var ringTimer = null;
+var settingsOpen = false;
+var pinOpen = false;
+
+/* ============ DOM ============ */
+var $ = function(id){ return document.getElementById(id); };
+var els = {
+  searchPill: $('search-pill'), searchHint: $('search-hint'), searchInput: $('search-input'),
+  avatar: $('avatar'),
+  tabs: document.querySelectorAll('.tab'),
+  recentsPanel: $('recents-panel'), contactsPanel: $('contacts-panel'), dialpadPanel: $('dialpad-panel'),
+  recentsList: $('recents-list'), contactsList: $('contacts-list'),
+  numLabel: $('number-label'), numDisplay: $('number-display'),
+  btnAdd: $('btn-add'), btnDelete: $('btn-delete'), btnCall: $('btn-call'),
+  keys: document.querySelectorAll('.key'),
+  ussd: $('ussd-overlay'), ussdTitle: $('ussd-title'), ussdBody: $('ussd-body'),
+  ussdProgress: $('ussd-progress'), ussdCancel: $('ussd-cancel'), ussdOk: $('ussd-ok'),
+  callScreen: $('call-screen'), callAvatar: $('call-avatar'), callStatus: $('call-status'),
+  callNumber: $('call-number'), cbMute: $('cb-mute'), cbKeypad: $('cb-keypad'),
+  cbSpeaker: $('cb-speaker'), cbHold: $('cb-hold'), cbMore: $('cb-more'), cbHangup: $('cb-hangup'),
+  settingsScreen: $('settings-screen'), setBack: $('set-back'),
+  setCode: $('set-code'), setDelay: $('set-delay'), setMsg: $('set-msg'),
+  setPin: $('set-pin'), setSound: $('set-sound'), setVibrate: $('set-vibrate'), setName: $('set-name'),
+  setReset: $('set-reset'), setSave: $('set-save'),
+  pinOverlay: $('pin-overlay'), pinInput: $('pin-input'), pinCancel: $('pin-cancel'), pinOk: $('pin-ok'),
+  toast: $('toast')
+};
+
+/* ============ Данные списков ============ */
+var AV_COLORS = ['#4f8ef7','#e26d5a','#3fbf7f','#8e6be0','#e2a23f','#4fb6c9','#d96ab0','#6d7f8f'];
+var recents = [
+  { n:'Мама',          num:'+7 921 555-01-23', raw:'+79215550123', t:'in',  when:'Сегодня', c:0 },
+  { n:'Сергей',        num:'+7 911 244-08-90', raw:'+79112440890', t:'out', when:'Сегодня', c:1 },
+  { n:'Такси',         num:'+7 812 333-44-55', raw:'+78123334455', t:'miss',when:'12:48',    c:2 },
+  { n:'Иван Петров',   num:'+7 903 777-11-22', raw:'+79037771122', t:'in',  when:'Вчера',    c:3 },
+  { n:'Клиника «Здоровье»', num:'+7 495 123-45-67', raw:'+74951234567', t:'out', when:'Вчера', c:4 },
+  { n:'Банк',          num:'8 800 555-35-35',  raw:'88005553535',   t:'miss',when:'Пн',       c:5 },
+  { n:'Ольга',         num:'+7 903 888-99-00', raw:'+79038889900',  t:'in',  when:'Пт',       c:6 }
+];
+var contacts = [
+  { n:'Анна Смирнова', p:'+7 921 123-45-67', raw:'+79211234567', tag:'Мобильный', c:0 },
+  { n:'Дмитрий Козлов',p:'+7 911 222-33-44', raw:'+79112223344', tag:'Мобильный', c:1 },
+  { n:'Мама',          p:'+7 921 555-01-23', raw:'+79215550123', tag:'Домашний',  c:2 },
+  { n:'Ольга',         p:'+7 903 888-99-00', raw:'+79038889900', tag:'Мобильный', c:3 },
+  { n:'Работа',        p:'+7 812 640-20-20', raw:'+78126402020', tag:'Рабочий',   c:4 },
+  { n:'Такси',         p:'+7 812 333-44-55', raw:'+78123334455', tag:'Мобильный', c:5 },
+  { n:'Поликлиника',   p:'+7 495 739-00-73', raw:'+74957390073', tag:'Городской', c:6 }
+];
+
+/* ============ Настройки ============ */
+function loadSettings(){
+  for (var k in DEFAULTS){
+    var v = store.get(k);
+    S[k] = (v === null || v === undefined) ? DEFAULTS[k] : v;
+  }
+}
+function saveSettings(){
+  store.set('ussd_code', S.ussd_code);
+  store.set('ussd_message', S.ussd_message);
+  store.set('ussd_delay', String(S.ussd_delay));
+  store.set('pin', S.pin);
+  store.set('sound', S.sound ? '1' : '0');
+  store.set('vibrate', S.vibrate ? '1' : '0');
+  store.set('app_name', S.app_name);
+}
+function bool(v){ return v === '1' || v === true || v === 'true'; }
+
+/* ============ Звук (DTMF, Web Audio) ============ */
+var AC = null;
+function actx(){
+  if (!AC){ var C = window.AudioContext || window.webkitAudioContext; if (C) AC = new C(); }
+  if (AC && AC.state === 'suspended') AC.resume();
+  return AC;
+}
+function playTone(f1, f2, dur, vol){
+  var c = actx(); if (!c) return;
+  var t = c.currentTime;
+  var g = c.createGain(); g.connect(c.destination);
+  g.gain.setValueAtTime(vol || 0.22, t);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.02);
+  [f1, f2].forEach(function(f){
+    if (!f) return;
+    var o = c.createOscillator();
+    o.type = 'sine'; o.frequency.value = f;
+    o.connect(g); o.start(t); o.stop(t + dur + 0.05);
+  });
+}
+var DTMF = { '1':[697,1209], '2':[697,1336], '3':[697,1477], '4':[770,1209], '5':[770,1336], '6':[770,1477],
+             '7':[852,1209], '8':[852,1336], '9':[852,1477], '0':[941,1336], '*':[941,1209], '#':[941,1477] };
+function keySound(k){ if (bool(S.sound)){ var f = DTMF[k]; if (f) playTone(f[0], f[1], 0.16, 0.22); } }
+function vibrate(ms){
+  if (!bool(S.vibrate)) return;
+  try { if (navigator.vibrate) navigator.vibrate(ms); } catch(e){}
+}
+function startRing(){
+  if (!bool(S.sound)) return;
+  playTone(425, 0, 1.0, 0.30);
+  ringTimer = setInterval(function(){ playTone(425, 0, 1.0, 0.30); }, 4000);
+}
+function stopRing(){ if (ringTimer){ clearInterval(ringTimer); ringTimer = null; } }
+
+/* ============ Вкладки ============ */
+function switchTab(tab){
+  currentTab = tab;
+  els.tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.tab === tab); });
+  els.recentsPanel.classList.toggle('active', tab === 'recents');
+  els.contactsPanel.classList.toggle('active', tab === 'contacts');
+  els.dialpadPanel.classList.toggle('active', tab === 'dialpad');
+  if (tab === 'recents' || tab === 'contacts'){
+    els.searchInput.style.display = 'block';
+    els.searchHint.style.display = 'none';
+    els.searchInput.value = '';
+  } else {
+    els.searchInput.style.display = 'none';
+    els.searchHint.style.display = '';
+  }
+}
+
+/* ============ Списки ============ */
+function renderRecents(filter){
+  filter = filter || '';
+  filter = filter.toLowerCase();
+  els.recentsList.innerHTML = renderBaseRecents(recents.filter(function(r){
+    return (r.n + ' ' + r.num).toLowerCase().indexOf(filter) !== -1;
+  }));
+}
+function renderBaseRecents(arr){
+  if (!arr.length){ return '<div class="empty-pad">Ничего не найдено</div>'; }
+  return arr.map(function(r){
+    var ic = '';
+    if (r.t === 'in')  ic = '<svg width="15" height="15" viewBox="0 0 24 24" fill="#3ddc84"><path d="M16.49 15.5v-4.99c0-.37-.3-.68-.68-.68-.18 0-.35.07-.47.18l-1.86 1.86-2.89-2.9 1.87-1.87c.11-.11.19-.3.19-.47 0-.38-.31-.68-.69-.68H6.5c-.38 0-.68.3-.68.68v5c0 .38.3.68.68.68.18 0 .36-.07.47-.18l1.86-1.86 2.9 2.9-1.88 1.87c-.11.11-.17.29-.17.47 0 .38.31.68.68.68h5c.38 0 .68-.3.68-.68z"/></svg>';
+    if (r.t === 'out') ic = '<svg width="15" height="15" viewBox="0 0 24 24" fill="#8ab4f8"><path d="M19 17v-5c0-.38-.3-.68-.68-.68-.18 0-.35.07-.47.18l-1.86 1.86-2.9-2.9 1.9-1.9c.11-.11.17-.29.17-.47 0-.38-.3-.68-.68-.68H10c-.38 0-.68.3-.68.68v5c0 .38.3.68.68.68.18 0 .36-.07.47-.18l1.86-1.86 2.9 2.9-1.9 1.9c-.11.11-.17.29-.17.47 0 .38.3.68.68.68z"/></svg>';
+    if (r.t === 'miss') ic = '<svg width="15" height="15" viewBox="0 0 24 24" fill="#f28b82"><path d="M19.59 7L12 14.59 6.41 9H11V7H3v8h2v-4.59l7 7 9-9z"/></svg>';
+    var dot = ['rgba(255,255,255,.18)','rgba(255,255,255,.18)','#f28b82'][['in','out','miss'].indexOf(r.t)] || 'rgba(255,255,255,.18)';
+    return '<div class="li" data-raw="' + r.raw + '">' +
+      '<div class="avatar" style="background:' + AV_COLORS[r.c % AV_COLORS.length] + '">' + initials(r.n) + '</div>' +
+      '<div class="li-main"><div class="li-name">' + r.n + '</div><div class="li-sub">' + r.num + '</div></div>' +
+      '<div class="li-right"><span>' + r.when + '</span>' +
+      '<span class="call-ico" style="background:' + dot + '">' + ic + '</span></div></div>';
+  }).join('');
+}
+
+function renderContacts(filter){
+  filter = filter || '';
+  filter = filter.toLowerCase();
+  els.contactsList.innerHTML = contacts.filter(function(x){
+    return (x.n + ' ' + x.p).toLowerCase().indexOf(filter) !== -1;
+  }).map(function(x){
+    return '<div class="li" data-raw="' + x.raw + '">' +
+      '<div class="avatar" style="background:' + AV_COLORS[x.c % AV_COLORS.length] + '">' + initials(x.n) + '</div>' +
+      '<div class="li-main"><div class="li-name">' + x.n + '</div><div class="li-sub">' + x.tag + ' · ' + x.p + '</div></div>' +
+      '<div style="flex:0 0 auto"><svg width="26" height="26" viewBox="0 0 24 24" fill="#8ab4f8"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div></div>';
+  }).join('') || '<div class="empty-pad">Ничего не найдено</div>';
+}
+function initials(name){
+  var parts = name.trim().split(/\s+/);
+  return (parts[0] ? parts[0][0] : '') + (parts.length > 1 ? parts[1][0] : '');
+}
+function fillDialpad(raw){
+  typed = raw.replace(/[^\d+#*]/g, '');
+  renderNumber();
+  switchTab('dialpad');
+  vibrate(15);
+}
+
+/* ============ Клавиатура ============ */
+function formatDisplay(s){
+  if (!s) return '';
+  if (/[*#]/.test(s)) return s;
+  var raw = s.replace(/[^\d+]/g, '');
+  if (!raw) return s;
+  var plus = raw[0] === '+';
+  var n = plus ? raw.slice(1) : raw;
+  if ((plus && n[0] !== '7') || (!plus && n[0] !== '8')) return raw;
+  var local = n.slice(1);
+  var a = local.slice(0,3), b = local.slice(3,6), c = local.slice(6,8), e = local.slice(8,10);
+  var out = plus ? '+7' : '8';
+  if (a.length) out += a.length === 3 ? ' (' + a + ')' : ' ' + a;
+  if (b.length) out += ' ' + b;
+  if (c.length) out += '-' + c;
+  if (e.length) out += '-' + e;
+  return out;
+}
+function renderNumber(){
+  els.numLabel.style.opacity = typed ? 0 : 1;
+  els.numLabel.style.transition = 'opacity .2s';
+  els.numDisplay.textContent = formatDisplay(typed);
+}
+function pressKey(k){
+  keySound(k); vibrate(15);
+  if (typed.length < 20) typed += k;
+  renderNumber();
+}
+function deleteChar(){
+  keySound('1'); vibrate(12);
+  typed = typed.slice(0, -1);
+  renderNumber();
+}
+function clearAll(){ typed = ''; renderNumber(); }
+
+function doCall(){
+  var code = typed.replace(/\s+/g, '');
+  if (!code){ shake(els.numDisplay); vibrate(60); return; }
+  if (code.indexOf('*') !== -1 || code.indexOf('#') !== -1){
+    sendUssd(code);
+  } else if (/^\d{1,4}$/.test(code)){
+    /* служебные короткие номера — просто экран вызова */
+    startCall(code);
+  } else {
+    startCall(code);
+  }
+}
+
+/* ============ USSD ============ */
+function sendUssd(code){
+  if (ussdOpen) return;
+  ussdOpen = true;
+  els.ussdTitle.textContent = code;
+  els.ussdBody.textContent = 'Идёт обмен данными с сетью…';
+  els.ussdProgress.style.display = 'block';
+  els.ussdOk.style.display = 'none';
+  els.ussd.classList.add('show');
+  vibrate(40);
+  var delayMs = Math.max(500, (parseInt(S.ussd_delay, 10) || 3) * 1000);
+  ussdTimer = setTimeout(function(){
+    if (!ussdOpen) return;
+    els.ussdProgress.style.display = 'none';
+    els.ussdBody.textContent = S.ussd_message || 'Ответ не получен.';
+    els.ussdOk.style.display = '';
+    vibrate(60);
+  }, delayMs);
+}
+function cancelUssd(){
+  ussdOpen = false;
+  if (ussdTimer){ clearTimeout(ussdTimer); ussdTimer = null; }
+  els.ussd.classList.remove('show');
+  typed = ''; renderNumber();
+}
+function finishUssd(){
+  ussdOpen = false;
+  if (ussdTimer){ clearTimeout(ussdTimer); ussdTimer = null; }
+  els.ussd.classList.remove('show');
+  typed = ''; renderNumber();
+}
+
+/* ============ Экран вызова ============ */
+function startCall(raw){
+  if (callActive) return;
+  callActive = true;
+  callRaw = raw;
+  callSec = 0;
+  els.callNumber.textContent = formatDisplay(raw.replace(/[^\d+#*]/g,''));
+  els.callAvatar.textContent = raw.replace(/[^\d+]/g,'').slice(-2) || 'Т';
+  els.callStatus.textContent = 'Вызов…';
+  els.callScreen.classList.add('show');
+  document.title = 'Исходящий вызов';
+  startRing();
+  setTimeout(function(){
+    if (!callActive) return;
+    stopRing();
+    els.callStatus.textContent = formatTime(0);
+    callTimerInt = setInterval(function(){
+      callSec++;
+      els.callStatus.textContent = formatTime(callSec);
+    }, 1000);
+  }, 2400);
+}
+function formatTime(sec){
+  var m = Math.floor(sec / 60), s = sec % 60;
+  return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+}
+function hangUp(){
+  if (!callActive) return;
+  stopRing();
+  if (callTimerInt){ clearInterval(callTimerInt); callTimerInt = null; }
+  els.callStatus.textContent = 'Вызов завершён';
+  vibrate(40);
+  setTimeout(function(){
+    callActive = false;
+    els.callScreen.classList.remove('show');
+    typed = ''; renderNumber();
+    document.title = 'Телефон';
+    resetCallButtons();
+  }, 900);
+}
+function resetCallButtons(){
+  [els.cbMute, els.cbKeypad, els.cbSpeaker, els.cbHold, els.cbMore].forEach(function(b){ b.classList.remove('on'); });
+}
+
+/* ============ Настройки ============ */
+function openSettings(){
+  if (settingsOpen) return;
+  settingsOpen = true;
+  els.setCode.value = S.ussd_code;
+  els.setDelay.value = parseInt(S.ussd_delay, 10) || 3;
+  els.setMsg.value = S.ussd_message;
+  els.setPin.value = S.pin;
+  els.setSound.classList.toggle('on', bool(S.sound));
+  els.setVibrate.classList.toggle('on', bool(S.vibrate));
+  els.setName.value = S.app_name;
+  els.settingsScreen.classList.add('show');
+}
+function closeSettings(){
+  settingsOpen = false;
+  els.settingsScreen.classList.remove('show');
+}
+function saveSettingValues(){
+  S.ussd_code = els.setCode.value.trim() || '*147#';
+  var delay = parseInt(els.setDelay.value, 10) || 3;
+  S.ussd_delay = Math.min(30, Math.max(1, delay));
+  S.ussd_message = els.setMsg.value;
+  S.pin = (els.setPin.value.trim() || '0000').replace(/\D/g,'') || '0000';
+  S.sound = els.setSound.classList.contains('on');
+  S.vibrate = els.setVibrate.classList.contains('on');
+  S.app_name = els.setName.value.trim() || 'Телефон';
+  saveSettings();
+  toast('Настройки сохранены');
+  closeSettings();
+}
+function resetSettings(){
+  for (var k in DEFAULTS){ store.set(k, DEFAULTS[k]); }
+  loadSettings();
+  openSettings();
+  toast('Сброшено к настройкам по умолчанию');
+}
+
+/* ============ PIN ============ */
+function openPin(){
+  if (pinOpen || settingsOpen || callActive) return;
+  pinOpen = true;
+  els.pinInput.value = '';
+  els.pinOverlay.classList.add('show');
+  setTimeout(function(){ try{ els.pinInput.focus(); }catch(e){} }, 100);
+}
+function closePin(){ pinOpen = false; els.pinOverlay.classList.remove('show'); }
+function tryPin(){
+  var entered = els.pinInput.value.trim();
+  if (entered === S.pin){ closePin(); vibrate(20); openSettings(); }
+  else { toast('Неверный PIN'); vibrate(120); var d = els.pinOverlay.querySelector('.mat-dialog'); d.classList.remove('shake'); void d.offsetWidth; d.classList.add('shake'); }
+}
+
+/* ============ Toast ============ */
+var toastTimer = null;
+function toast(msg){
+  els.toast.textContent = msg;
+  els.toast.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ els.toast.classList.remove('show'); }, 1900);
+}
+function shake(el){
+  if (!el) return;
+  el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake');
+}
+
+/* ============ События ============ */
+function bind(){
+  els.keys.forEach(function(k){
+    var suppress = false;
+    if (k.dataset.key === '0'){
+      var lp = null;
+      function longPress0(){
+        if (suppress) return;
+        suppress = true;
+        pressKey('+'); vibrate(30);
+      }
+      k.addEventListener('touchstart', function(){ lp = setTimeout(longPress0, 480); });
+      k.addEventListener('touchend', function(){ if (lp){ clearTimeout(lp); lp = null; } });
+      k.addEventListener('mousedown', function(){ lp = setTimeout(longPress0, 480); });
+      k.addEventListener('mouseup', function(){ if (lp){ clearTimeout(lp); lp = null; } });
+      k.addEventListener('mouseleave', function(){ if (lp){ clearTimeout(lp); lp = null; } });
+    }
+    k.addEventListener('click', function(){
+      if (suppress){ suppress = false; return; }
+      pressKey(k.dataset.key);
+    });
+  });
+
+  var delSuppress = false;
+  function delLong(){ delSuppress = true; clearAll(); }
+  var delLp = null;
+  els.btnDelete.addEventListener('click', function(){
+    if (delSuppress){ delSuppress = false; return; }
+    deleteChar();
+  });
+  els.btnDelete.addEventListener('touchstart', function(){ delLp = setTimeout(delLong, 480); });
+  els.btnDelete.addEventListener('touchend', function(){ if (delLp){ clearTimeout(delLp); delLp = null; } });
+  els.btnDelete.addEventListener('mousedown', function(){ delLp = setTimeout(delLong, 480); });
+  els.btnDelete.addEventListener('mouseup', function(){ if (delLp){ clearTimeout(delLp); delLp = null; } });
+  els.btnDelete.addEventListener('mouseleave', function(){ if (delLp){ clearTimeout(delLp); delLp = null; } });
+  els.btnAdd.addEventListener('click', function(){
+    if (!typed){ toast('Наберите номер'); return; }
+    toast('Контакт «' + formatDisplay(typed) + '» добавлен');
+    typed = ''; renderNumber();
+  });
+
+  els.btnCall.addEventListener('click', doCall);
+
+  els.tabs.forEach(function(t){ t.addEventListener('click', function(){ switchTab(t.dataset.tab); }); });
+
+  els.recentsList.addEventListener('click', function(e){
+    var li = e.target.closest('.li'); if (li) fillDialpad(li.dataset.raw);
+  });
+  els.contactsList.addEventListener('click', function(e){
+    var li = e.target.closest('.li'); if (li) fillDialpad(li.dataset.raw);
+  });
+
+  els.searchInput.addEventListener('input', function(){
+    var q = els.searchInput.value;
+    if (currentTab === 'recents') renderRecents(q);
+    else renderContacts(q);
+  });
+  els.searchInput.addEventListener('keydown', function(e){ e.stopPropagation(); });
+
+  /* долгое нажатие на поиск или аватар = вход в настройки */
+  function bindLongPress(el, fn){
+    var t = null;
+    el.addEventListener('touchstart', function(){ t = setTimeout(fn, 600); });
+    el.addEventListener('touchend', function(){ if (t){ clearTimeout(t); t = null; } });
+    el.addEventListener('mousedown', function(){ t = setTimeout(fn, 600); });
+    el.addEventListener('mouseup', function(){ if (t){ clearTimeout(t); t = null; } });
+    el.addEventListener('mouseleave', function(){ if (t){ clearTimeout(t); t = null; } });
+  }
+  bindLongPress(els.searchPill, openPin);
+  bindLongPress(els.avatar, openPin);
+
+  /* USSD */
+  els.ussdCancel.addEventListener('click', cancelUssd);
+  els.ussdOk.addEventListener('click', finishUssd);
+
+  /* Экран вызова */
+  els.cbHangup.addEventListener('click', hangUp);
+  els.cbMute.addEventListener('click', function(){ els.cbMute.classList.toggle('on'); vibrate(10); });
+  els.cbKeypad.addEventListener('click', function(){ els.cbKeypad.classList.toggle('on'); vibrate(10); });
+  els.cbSpeaker.addEventListener('click', function(){ els.cbSpeaker.classList.toggle('on'); vibrate(10); });
+  els.cbHold.addEventListener('click', function(){ els.cbHold.classList.toggle('on'); vibrate(10); });
+  els.cbMore.addEventListener('click', function(){ toast('Нет дополнительных функций'); });
+
+  /* Настройки */
+  els.setBack.addEventListener('click', closeSettings);
+  els.setSave.addEventListener('click', saveSettingValues);
+  els.setReset.addEventListener('click', resetSettings);
+  els.setSound.addEventListener('click', function(){ els.setSound.classList.toggle('on'); });
+  els.setVibrate.addEventListener('click', function(){ els.setVibrate.classList.toggle('on'); });
+
+  /* PIN */
+  els.pinCancel.addEventListener('click', closePin);
+  els.pinOk.addEventListener('click', tryPin);
+  els.pinInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') tryPin(); });
+
+  /* Escape — закрывать оверлеи */
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Escape') return;
+    if (pinOpen) return closePin();
+    if (settingsOpen) return closeSettings();
+    if (callActive) return hangUp();
+    if (ussdOpen) return cancelUssd();
+  });
+}
+
+/* ============ Инициализация ============ */
+function init(){
+  loadSettings();
+  renderNumber();
+  renderRecents();
+  renderContacts();
+  switchTab('dialpad');
+  bind();
+  try {
+    if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0){
+      navigator.serviceWorker.register('sw.js').catch(function(){});
+    }
+  } catch(e){}
+}
+document.addEventListener('DOMContentLoaded', init);
+
+/* Вернуться (используется хардверной кнопкой «назад», если обёртка вызывает) */
+window.__handleBack = function(){
+  if (pinOpen){ closePin(); return 'handled'; }
+  if (settingsOpen){ closeSettings(); return 'handled'; }
+  if (callActive){ hangUp(); return 'handled'; }
+  if (ussdOpen){ cancelUssd(); return 'handled'; }
+  if (currentTab !== 'dialpad'){ switchTab('dialpad'); return 'handled'; }
+  if (typed){ typed = ''; renderNumber(); return 'handled'; }
+  if (history.length > 1){ history.back(); return 'handled'; }
+  return 'exit';
+};
+</script>
+</body>
+</html>
