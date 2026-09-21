@@ -1,10 +1,10 @@
 /* Service Worker: оффлайн-кэш, чтобы звонилка работала без интернета */
-var CACHE = 'tel-v3';
+var CACHE = 'tel-v4';
 
 self.addEventListener('install', function (e) {
   e.waitUntil(
     caches.open(CACHE).then(function (c) {
-      return c.addAll(['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png']);
+      return c.addAll(['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png']);
     })
   );
   self.skipWaiting();
