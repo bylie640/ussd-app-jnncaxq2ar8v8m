@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#120F0E">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -12,15 +12,17 @@
 <link rel="icon" type="image/png" href="icon-192.png">
 <style>
   :root{
-    --bg:#000000;
-    --surface:#1c1c1f;
-    --surface2:#232327;
-    --text:#f2f2f3;
-    --text-dim:#9e9ea4;
-    --accent:#2a7cff;
-    --green:#3ddc84;
-    --red:#ea4335;
-    --divider:#2a2a2e;
+    --bg:#120f0e;
+    --surface:#242424;
+    --surface2:#2b2b2b;
+    --card:#242424;
+    --text:#f3f1ee;
+    --text-dim:#9a9490;
+    --text-faint:#6d6865;
+    --accent:#8ab4f8;
+    --green:#3e8a53;
+    --red:#d9554d;
+    --divider:#26221f;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation;}
   input,textarea{user-select:text;-webkit-user-select:text;}
@@ -39,174 +41,189 @@
 
   /* ===== Header ===== */
   header{
-    flex:0 0 auto;padding:calc(env(safe-area-inset-top,0px) + 10px) 12px 4px;
+    flex:0 0 auto;padding:calc(env(safe-area-inset-top,0px) + 8px) 14px 2px;
     display:flex;align-items:center;gap:12px;
   }
   #search-pill{
     flex:1;display:flex;align-items:center;gap:10px;
-    height:46px;background:rgba(255,255,255,0.07);
-    border-radius:24px;padding:0 16px;
+    height:38px;background:rgba(255,255,255,.06);
+    border-radius:20px;padding:0 14px;
   }
-  #search-pill svg{flex:0 0 auto;opacity:.55;}
-  #search-hint{color:var(--text-dim);font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  #search-pill svg{flex:0 0 auto;opacity:.5;}
+  #search-hint{color:var(--text-faint);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   #search-input{
     flex:1;min-width:0;background:transparent;border:none;outline:none;
-    color:var(--text);font-size:15px;display:none;
+    color:var(--text);font-size:14px;display:none;
   }
   #search-pill.searchable{cursor:pointer;}
   #avatar{
-    flex:0 0 auto;width:40px;height:40px;border-radius:50%;
+    flex:0 0 auto;width:34px;height:34px;border-radius:50%;
     display:flex;align-items:center;justify-content:center;
-    font-size:15px;font-weight:500;color:#fff;
-    background:linear-gradient(135deg,#7e57c2,#4285f4);
-    cursor:pointer;
+    font-size:13px;font-weight:500;color:#d8d5d2;
+    background:linear-gradient(135deg,#5c4636,#3f3330);
+    cursor:pointer;border:1px solid rgba(255,255,255,.08);
   }
 
   /* ===== Panels ===== */
   main{flex:1;min-height:0;display:flex;flex-direction:column;}
-  .panel{flex:1;min-height:0;display:none;flex-direction:column;animation:fade .18s ease;}
+  .panel{flex:1;min-height:0;display:none;flex-direction:column;animation:fade .16s ease;}
   .panel.active{display:flex;}
   @keyframes fade{from{opacity:0;}to{opacity:1;}}
-  .section-title{font-size:16px;font-weight:500;padding:12px 16px 4px;}
-  .list{flex:1;overflow-y:auto;padding:0 0 4px;}
+  .section-title{font-size:15px;font-weight:500;padding:10px 18px 2px;letter-spacing:.2px;}
+  .list{flex:1;overflow-y:auto;padding:4px 0 0;}
   .li{
-    display:flex;align-items:center;gap:14px;padding:11px 16px;cursor:pointer;
-    border-bottom:1px solid var(--divider);
+    display:flex;align-items:center;gap:14px;padding:10px 18px;cursor:pointer;
   }
-  .li:active{background:rgba(255,255,255,.06);}
+  .li:active{background:rgba(255,255,255,.05);}
   .avatar{
-    width:42px;height:42px;border-radius:50%;flex:0 0 auto;
+    width:40px;height:40px;border-radius:50%;flex:0 0 auto;
     display:flex;align-items:center;justify-content:center;
-    color:#fff;font-size:16px;font-weight:500;
+    color:#f0ece8;font-size:15px;font-weight:500;
   }
   .li-main{flex:1;min-width:0;}
-  .li-name{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .li-sub{font-size:13px;color:var(--text-dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .li-right{flex:0 0 auto;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-dim);}
-  .call-ico{
-    width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-    background:rgba(61,220,132,.15);color:#3ddc84;
-  }
-  .call-ico.miss{background:rgba(234,67,53,.15);color:#f28b82;}
-  .empty-pad{flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:14px;min-height:80px;}
+  .li-name{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .li-sub{font-size:12.5px;color:var(--text-dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .li-right{flex:0 0 auto;color:var(--text-faint);font-size:12px;}
+  .empty-pad{flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-faint);font-size:14px;min-height:80px;}
 
-  /* ===== Keypad (общий) ===== */
+  /* ===== Keypad ===== */
   .keypad{
     flex:0 0 auto;display:grid;grid-template-columns:repeat(3,1fr);
-    row-gap:4px;padding:6px 20px 2px;
+    row-gap:2px;padding:4px 18px 0;
   }
   .key{
-    justify-self:center;width:min(17vw,64px);height:min(17vw,64px);border-radius:50%;
-    border:none;background:transparent;color:var(--text);cursor:pointer;
+    justify-self:center;width:min(18vw,68px);height:min(18vw,68px);border-radius:50%;
+    border:1px solid rgba(255,255,255,.05);
+    background:rgba(255,255,255,.03);
+    color:var(--text);cursor:pointer;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
     transition:background .12s;
   }
-  .key:active{background:rgba(255,255,255,.14);}
-  .k-num{font-size:clamp(22px,6vw,27px);font-weight:400;line-height:1;}
-  .k-letters{font-size:9px;letter-spacing:1px;color:var(--text-dim);line-height:1;}
-  .call-row{flex:0 0 auto;display:flex;justify-content:center;padding:10px 0 calc(10px + env(safe-area-inset-bottom,0px));}
+  .key:active{background:rgba(255,255,255,.13);}
+  .k-num{font-size:clamp(21px,6vw,26px);font-weight:400;line-height:1;}
+  .k-letters{display:flex;flex-direction:column;align-items:center;gap:1px;line-height:1;}
+  .k-lat{font-size:8.5px;letter-spacing:1.2px;color:#b7b1ab;margin-top:2px;}
+  .k-cyr{font-size:7.5px;letter-spacing:.6px;color:#6f6a66;}
+  .call-row{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;padding:8px 0 calc(8px + env(safe-area-inset-bottom,0px));}
   .call-btn{
-    width:60px;height:60px;border-radius:50%;border:none;cursor:pointer;
+    width:58px;height:58px;border-radius:50%;border:none;cursor:pointer;
     background:var(--green);display:flex;align-items:center;justify-content:center;
-    box-shadow:0 4px 18px rgba(61,220,132,.28);
+    box-shadow:0 3px 14px rgba(35,110,60,.35);
   }
-  .call-btn svg{width:29px;height:29px;fill:#04361d;}
+  .call-btn svg{width:28px;height:28px;fill:#e9f6ec;}
   .call-btn:active{transform:scale(.94);}
+  .call-label{font-size:11px;color:var(--text-faint);margin-top:5px;letter-spacing:.3px;}
 
-  /* ===== Dialpad (вкладка) ===== */
+  /* ===== Dialpad tab ===== */
   #dialpad-panel{overflow:hidden;}
   #number-area{
     flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;
-    padding:8px 28px 6px;min-height:0;
+    padding:6px 28px 2px;min-height:0;
   }
-  #number-label{font-size:13px;color:var(--text-dim);margin-bottom:6px;}
+  #number-label{font-size:12px;color:var(--text-faint);margin-bottom:5px;}
   #number-display{
-    font-size:clamp(24px,7vw,32px);letter-spacing:.5px;max-width:100%;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:40px;text-align:center;
+    font-size:clamp(23px,6.5vw,30px);letter-spacing:.5px;max-width:100%;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:38px;text-align:center;
   }
   #dialpad-actions{
-    flex:0 0 auto;display:flex;justify-content:center;gap:56px;align-items:center;padding-bottom:4px;
+    flex:0 0 auto;display:flex;justify-content:center;gap:60px;align-items:center;padding:2px 0 0;
   }
   .icon-btn{
-    width:50px;height:50px;border-radius:50%;border:none;background:none;cursor:pointer;
+    width:46px;height:46px;border-radius:50%;border:none;background:none;cursor:pointer;
     display:flex;align-items:center;justify-content:center;color:var(--text);
   }
-  .icon-btn svg{opacity:.85;}
+  .icon-btn svg{opacity:.75;}
   .icon-btn:active{background:rgba(255,255,255,.1);}
+
+  /* Меню действий над клавиатурой (как на скриншоте) */
+  .actions-menu{
+    flex:0 0 auto;display:flex;flex-direction:column;
+    padding:2px 16px 2px;overflow:hidden;
+  }
+  .act{
+    display:flex;align-items:center;gap:14px;padding:5px 10px;
+    border-radius:12px;cursor:pointer;
+  }
+  .act:active{background:rgba(255,255,255,.06);}
+  .act .act-ico{
+    width:32px;height:32px;border-radius:50%;flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .act .act-txt{font-size:14px;color:var(--text);}
 
   /* ===== Bottom tabs ===== */
   #bottom-tabs{
-    flex:0 0 auto;display:flex;padding:4px 0 calc(6px + env(safe-area-inset-bottom,0px));
+    flex:0 0 auto;display:flex;padding:3px 0 calc(4px + env(safe-area-inset-bottom,0px));
     border-top:1px solid var(--divider);
   }
   .btab{
-    flex:1;background:none;border:none;color:var(--text-dim);
-    font-size:14px;font-weight:500;padding:9px 0 7px;cursor:pointer;position:relative;
+    flex:1;background:none;border:none;color:var(--text-faint);
+    font-size:13px;font-weight:500;padding:8px 0 6px;cursor:pointer;position:relative;
   }
   .btab.active{color:var(--text);}
   .btab.active::before{
-    content:"";position:absolute;top:-5px;left:50%;transform:translateX(-50%);
-    width:30px;height:3px;border-radius:2px;background:var(--accent);
+    content:"";position:absolute;top:-4px;left:50%;transform:translateX(-50%);
+    width:26px;height:2px;border-radius:2px;background:var(--accent);
   }
 
-  /* ===== Overlay bases ===== */
+  /* ===== USSD dialog ===== */
   .overlay{
     position:absolute;inset:0;z-index:50;display:none;
-    background:rgba(0,0,0,.45);align-items:center;justify-content:center;padding:24px;
+    background:rgba(0,0,0,.5);align-items:center;justify-content:center;padding:24px;
   }
   .overlay.show{display:flex;animation:fade .15s ease;}
   .mat-dialog{
-    width:100%;max-width:330px;background:var(--surface);
-    border-radius:18px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.6);
-    border:1px solid var(--divider);animation:pop .18s ease;
+    width:100%;max-width:336px;background:var(--card);
+    border-radius:16px;overflow:hidden;box-shadow:0 14px 44px rgba(0,0,0,.65);
+    border:1px solid rgba(255,255,255,.06);animation:pop .18s ease;
   }
-  @keyframes pop{from{transform:scale(.94);opacity:0;}to{transform:scale(1);opacity:1;}}
-  .mat-dialog h3{font-size:17px;font-weight:500;padding:18px 20px 4px;text-align:center;}
-  .mat-dialog .body{padding:8px 20px 14px;font-size:15px;color:var(--text);line-height:1.55;text-align:center;white-space:pre-line;word-break:break-word;}
-  .dialog-btns{display:flex;justify-content:center;padding:4px 8px 10px;gap:8px;}
+  @keyframes pop{from{transform:scale(.95);opacity:0;}to{transform:scale(1);opacity:1;}}
+  .mat-dialog h3{font-size:17px;font-weight:500;padding:16px 20px 2px;}
+  .body{padding:4px 20px 10px;font-size:14.5px;color:var(--text);line-height:1.55;}
+  .body.left{text-align:left;white-space:pre-line;word-break:break-word;}
+  .dial-btns{display:flex;justify-content:flex-end;padding:2px 8px 10px;gap:8px;}
   .dbtn{
-    min-width:88px;padding:10px 16px;border:none;border-radius:20px;cursor:pointer;
-    font-size:15px;font-weight:500;background:#38383d;color:#c9c9cf;
+    min-width:64px;padding:9px 14px;border:none;border-radius:18px;cursor:pointer;
+    font-size:14px;font-weight:500;background:transparent;color:var(--text-dim);
   }
-  .dbtn.primary{background:rgba(42,124,255,.22);color:#8ab4f8;}
-  .dbtn:active{filter:brightness(1.3);}
-  .progress{height:3px;background:rgba(255,255,255,.08);position:relative;}
-  .progress .ind{
-    position:absolute;top:0;left:0;height:100%;width:40%;background:var(--accent);
-    animation:slide 1.1s infinite ease-in-out;
+  .dbtn.primary{color:var(--accent);}
+  .dbtn:active{background:rgba(255,255,255,.1);}
+  .ussd-row{display:flex;gap:14px;padding:16px 20px 18px;align-items:flex-start;}
+  .spinner{
+    width:20px;height:20px;flex:0 0 auto;margin-top:1px;border-radius:50%;
+    border:2px solid rgba(255,255,255,.15);border-top-color:#fff;
+    animation:spin .9s linear infinite;
   }
-  @keyframes slide{0%{left:-40%;}100%{left:100%;}}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .ussd-lines{font-size:14px;line-height:1.6;color:var(--text);min-width:0;}
 
   /* ===== Call screen ===== */
-  #call-screen{background:#000;}
+  #call-screen{background:#0c0a09;}
   #call-inner{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;position:relative;}
   #call-avatar{
-    width:118px;height:118px;border-radius:50%;margin-top:calc(env(safe-area-inset-top,0px) + 14vh);
-    display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:500;color:#fff;
-    background:linear-gradient(135deg,#7e57c2,#4285f4);
-    box-shadow:0 0 0 8px rgba(255,255,255,.05);
+    width:112px;height:112px;border-radius:50%;margin-top:calc(env(safe-area-inset-top,0px) + 12vh);
+    display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:500;color:#eeeae6;
+    background:radial-gradient(circle at 30% 30%,#4a3b2e,#33281f);
+    border:3px solid rgba(255,255,255,.12);
   }
-  #call-status{margin-top:26px;font-size:18px;color:var(--text);min-height:26px;}
-  #call-number{margin-top:8px;font-size:26px;letter-spacing:.3px;text-align:center;padding:0 24px;}
-  #call-btns{
-    margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:22px;
-    padding-bottom:calc(30px + env(safe-area-inset-bottom,0px));
-  }
-  .cbtn-row{display:flex;gap:24px;}
+  #call-status{margin-top:24px;font-size:17px;color:var(--text);min-height:24px;}
+  #call-number{margin-top:7px;font-size:24px;letter-spacing:.3px;text-align:center;padding:0 24px;color:#cfcac5;}
+  #call-btns{margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:20px;padding-bottom:calc(28px + env(safe-area-inset-bottom,0px));}
+  .cbtn-row{display:flex;gap:22px;}
   .cbtn{
-    width:62px;height:62px;border-radius:50%;border:none;background:rgba(255,255,255,.1);
+    width:60px;height:60px;border-radius:50%;border:none;background:rgba(255,255,255,.08);
     color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
     position:relative;
   }
-  .cbtn span{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:6px;font-size:11px;color:var(--text-dim);white-space:nowrap;}
-  .cbtn.on{background:rgba(42,124,255,.85);}
+  .cbtn span{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:6px;font-size:10.5px;color:var(--text-faint);white-space:nowrap;}
+  .cbtn.on{background:rgba(138,180,248,.9);}
   .cbtn:active{filter:brightness(1.25);}
   #cb-hangup{
-    width:64px;height:64px;border-radius:50%;border:none;cursor:pointer;
+    width:62px;height:62px;border-radius:50%;border:none;cursor:pointer;
     background:var(--red);display:flex;align-items:center;justify-content:center;
-    box-shadow:0 4px 18px rgba(234,67,53,.3);
+    box-shadow:0 4px 16px rgba(190,60,52,.35);
   }
-  #cb-hangup svg{width:30px;height:30px;fill:#fff;}
+  #cb-hangup svg{width:29px;height:29px;fill:#fff;}
   #cb-hangup:active{transform:scale(.94);}
 
   /* ===== Settings ===== */
@@ -215,49 +232,28 @@
     display:none;flex-direction:column;animation:fade .18s ease;
   }
   #settings-screen.show{display:flex;}
-  .set-top{
-    flex:0 0 auto;display:flex;align-items:center;gap:6px;
-    padding:calc(env(safe-area-inset-top,0px) + 10px) 8px 6px;
-  }
-  .set-top h1{font-size:19px;font-weight:500;flex:1;text-align:center;}
-  .back-btn{
-    width:42px;height:42px;border-radius:50%;border:none;background:none;color:var(--text);
-    display:flex;align-items:center;justify-content:center;cursor:pointer;
-  }
+  .set-top{flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:calc(env(safe-area-inset-top,0px) + 10px) 8px 6px;}
+  .set-top h1{font-size:18px;font-weight:500;flex:1;text-align:center;}
+  .back-btn{width:42px;height:42px;border-radius:50%;border:none;background:none;color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;}
   .back-btn:active{background:rgba(255,255,255,.1);}
   .set-list{flex:1;overflow-y:auto;padding:8px 16px 90px;}
-  .set-group-title{font-size:13px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.6px;margin:18px 4px 6px;}
-  .set-row{
-    display:flex;align-items:center;justify-content:space-between;gap:12px;
-    padding:13px 4px;border-bottom:1px solid var(--divider);
-  }
+  .set-group-title{font-size:12px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.6px;margin:18px 4px 6px;}
+  .set-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 4px;border-bottom:1px solid var(--divider);}
   .set-row label{font-size:15px;flex:0 0 auto;}
-  .set-row input, .set-row textarea{
-    font-size:15px;color:var(--text);background:var(--surface2);
-    border:1px solid var(--divider);border-radius:8px;padding:8px 10px;outline:none;
-  }
+  .set-row input,.set-row textarea{font-size:15px;color:var(--text);background:var(--surface2);border:1px solid var(--divider);border-radius:8px;padding:8px 10px;outline:none;}
   .set-row input{max-width:150px;text-align:right;font-family:inherit;}
   .set-row textarea{resize:none;}
-  .switch{
-    width:52px;height:30px;border-radius:16px;background:#4a4a50;position:relative;cursor:pointer;flex:0 0 auto;
-    transition:background .2s;
-  }
-  .switch::after{
-    content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;
-    transition:transform .2s;
-  }
+  .switch{width:52px;height:30px;border-radius:16px;background:#48433f;position:relative;cursor:pointer;flex:0 0 auto;transition:background .2s;}
+  .switch::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s;}
   .switch.on{background:var(--green);}
   .switch.on::after{transform:translateX(22px);}
   .set-actions{padding:10px 4px 0;display:flex;gap:12px;}
-  .set-btn{
-    flex:1;padding:13px;border:none;border-radius:23px;cursor:pointer;font-size:15px;font-weight:500;
-    background:rgba(42,124,255,.2);color:#8ab4f8;
-  }
-  .set-btn.ghost{background:rgba(255,255,255,.08);color:#c9c9cf;}
-  .set-btn:active{filter:brightness(1.3);}
-  .set-hint{font-size:12px;color:var(--text-dim);margin-top:10px;line-height:1.5;}
+  .set-btn{flex:1;padding:13px;border:none;border-radius:23px;cursor:pointer;font-size:15px;font-weight:500;background:rgba(138,180,248,.14);color:var(--accent);}
+  .set-btn.ghost{background:rgba(255,255,255,.07);color:#c0bbb6;}
+  .set-btn:active{filter:brightness(1.25);}
+  .set-hint{font-size:12px;color:var(--text-faint);margin-top:10px;line-height:1.5;}
 
-  /* ===== PIN dialog ===== */
+  /* ===== PIN ===== */
   #pin-input{
     width:100%;padding:12px;font-size:22px;letter-spacing:6px;text-align:center;
     background:var(--surface2);border:1px solid var(--divider);border-radius:10px;color:var(--text);outline:none;
@@ -265,8 +261,8 @@
 
   /* ===== Toast ===== */
   #toast{
-    position:absolute;left:50%;bottom:calc(56px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);
-    background:#3c4043;color:#fff;font-size:14px;padding:10px 18px;border-radius:22px;
+    position:absolute;left:50%;bottom:calc(54px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);
+    background:#3a3633;color:#fff;font-size:13.5px;padding:10px 18px;border-radius:22px;
     z-index:90;opacity:0;pointer-events:none;transition:opacity .25s, transform .25s;white-space:nowrap;max-width:90%;
   }
   #toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
@@ -283,7 +279,7 @@
 
   <header>
     <div id="search-pill" class="searchable">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="#9e9ea4"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z"/></svg>
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="#9a9490"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z"/></svg>
       <span id="search-hint">Поиск людей и номеров</span>
       <input id="search-input" type="search" placeholder="Поиск людей и номеров" autocomplete="off">
     </div>
@@ -300,6 +296,7 @@
         <button class="call-btn" title="Позвонить">
           <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
         </button>
+        <div class="call-label">Позвонить</div>
       </div>
     </section>
 
@@ -311,37 +308,52 @@
       </div>
       <div id="dialpad-actions">
         <button id="btn-add" class="icon-btn" title="Добавить в контакты">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="#9e9ea4"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          <svg width="25" height="25" viewBox="0 0 24 24" fill="#9a9490"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
         </button>
         <button id="btn-delete" class="icon-btn" title="Удалить">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="#9e9ea4"><path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z"/></svg>
+          <svg width="27" height="27" viewBox="0 0 24 24" fill="#9a9490"><path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z"/></svg>
         </button>
+      </div>
+      <div class="actions-menu" id="actions-menu" style="display:none;">
+        <div class="act" data-act="add"><span class="act-ico" style="background:rgba(216,143,61,.15);"><svg width="19" height="19" viewBox="0 0 24 24" fill="#e29b47"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span><span class="act-txt">Создать контакт</span></div>
+        <div class="act" data-act="add2"><span class="act-ico" style="background:rgba(216,143,61,.15);"><svg width="19" height="19" viewBox="0 0 24 24" fill="#e29b47"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span><span class="act-txt">Добавить к контакту</span></div>
+        <div class="act" data-act="video"><span class="act-ico" style="background:rgba(138,180,248,.16);"><svg width="19" height="19" viewBox="0 0 24 24" fill="#8ab4f8"><path d="M17 10.5V7a2 2 0 0 0-2-2H3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3.5l4 4v-11l-4 4z"/></svg></span><span class="act-txt">Начать видеовстречу</span></div>
+        <div class="act" data-act="msg"><span class="act-ico" style="background:rgba(61,206,143,.14);"><svg width="19" height="19" viewBox="0 0 24 24" fill="#3dce8f"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/></svg></span><span class="act-txt">Отправить сообщение</span></div>
       </div>
       <div id="dialpad-keypad" class="keypad"></div>
       <div class="call-row">
         <button class="call-btn" title="Позвонить">
           <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
         </button>
+        <div class="call-label">Позвонить</div>
       </div>
     </section>
   </main>
 
-  <!-- Нижние вкладки (как на скриншотах) -->
+  <!-- Нижние вкладки -->
   <nav id="bottom-tabs">
     <button class="btab active" data-tab="home">Главный экран</button>
     <button class="btab" data-tab="dialpad">Клавиатура</button>
   </nav>
 
-  <!-- USSD dialog -->
+  <!-- USSD: прогресс -->
   <div id="ussd-overlay" class="overlay">
     <div class="mat-dialog">
-      <h3 id="ussd-title">Запрос USSD</h3>
-      <div class="body" id="ussd-body">Запуск последовательности ММ…</div>
-      <div class="dialog-btns">
-        <button class="dbtn" id="ussd-cancel">Отмена</button>
-        <button class="dbtn primary" id="ussd-ok" style="display:none;">OK</button>
+      <div id="ussd-progress-view">
+        <div class="ussd-row">
+          <div class="spinner"></div>
+          <div class="ussd-lines">
+            <div id="ussd-line1">Запуск последовательности ММ...</div>
+            <div id="ussd-line2" style="display:none;">Выполняется запрос USSD...</div>
+          </div>
+        </div>
+        <div class="dial-btns"><button class="dbtn" id="ussd-cancel">Отмена</button></div>
       </div>
-      <div class="progress" id="ussd-progress"><div class="ind"></div></div>
+      <div id="ussd-result-view" style="display:none;">
+        <h3 id="ussd-title"></h3>
+        <div class="body left" id="ussd-body"></div>
+        <div class="dial-btns"><button class="dbtn primary" id="ussd-ok">ок</button></div>
+      </div>
     </div>
   </div>
 
@@ -353,7 +365,7 @@
       <div id="call-number"></div>
       <div id="call-btns">
         <div class="cbtn-row">
-          <button class="cbtn" id="cb-mute"><svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg><span>Откл. звук</span></button>
+          <button class="cbtn" id="cb-mute"><svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg><span>Откл. зв.</span></button>
           <button class="cbtn" id="cb-keypad"><svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-2v2h2V8zm-4 0h-2v2h2V8zm-4 0H8v2h2V8zM6 8H4v2h2V8zm12 4h-2v2h2v-2zm-4 0h-2v2h2v-2zm-4 0H8v2h2v-2zm-4 0H4v2h2v-2zm12 4h-2v2h2v-2zm-4 0h-2v2h2v-2zm-4 0H8v2h2v-2zm-4 0H4v2h2v-2zM12 3C7.03 3 3 7.03 3 12s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9z"/></svg><span>Клавиатура</span></button>
           <button class="cbtn" id="cb-speaker"><svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg><span>Динамик</span></button>
         </div>
@@ -383,10 +395,8 @@
         <label>Задержка (сек)</label>
         <input id="set-delay" type="number" min="1" max="30">
       </div>
-      <div class="set-row">
-        <label>Текст ответа</label>
-      </div>
-      <div class="set-row" style="align-items:stretch;flex-direction:column;border:none;">
+      <div class="set-row" style="border:none;flex-direction:column;align-items:flex-start;padding-bottom:6px;">
+        <label style="font-size:13px;color:var(--text-dim);">Текст ответа (1-я строка — заголовок)</label>
         <textarea id="set-msg" rows="5" style="width:100%;"></textarea>
       </div>
       <div class="set-group-title">Доступ</div>
@@ -422,7 +432,7 @@
       <div class="body" style="padding-bottom:10px;">
         <input id="pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off">
       </div>
-      <div class="dialog-btns">
+      <div class="dial-btns">
         <button class="dbtn" id="pin-cancel">Отмена</button>
         <button class="dbtn primary" id="pin-ok">OK</button>
       </div>
@@ -441,7 +451,7 @@ var store = {
 };
 var DEFAULTS = {
   ussd_code:   '*147#',
-  ussd_message:'Данные оператора\nВаш номер: +375 44 542-79-32\nСтатус: активно\n\nТариф: «Безлимит на звонки»',
+  ussd_message:'Данные оператора\nВаш номер: +375 44 542-79-32\nСтатус: активно\nТариф: «Безлимит на звонки»',
   ussd_delay:  '3',
   pin:         '0000',
   sound:       '1',
@@ -455,7 +465,7 @@ var typed = '';
 var currentTab = 'home';
 var ussdOpen = false;
 var ussdTimer = null;
-var ussdStep = null;
+var ussdStep = 0;
 var callActive = false;
 var callTimerInt = null;
 var callSec = 0;
@@ -474,8 +484,11 @@ var els = {
   homeList: $('home-list'), homeKeypad: $('home-keypad'), dialpadKeypad: $('dialpad-keypad'),
   numLabel: $('number-label'), numDisplay: $('number-display'),
   btnAdd: $('btn-add'), btnDelete: $('btn-delete'),
-  ussd: $('ussd-overlay'), ussdTitle: $('ussd-title'), ussdBody: $('ussd-body'),
-  ussdProgress: $('ussd-progress'), ussdCancel: $('ussd-cancel'), ussdOk: $('ussd-ok'),
+  actionsMenu: $('actions-menu'),
+  ussd: $('ussd-overlay'), ussdProgress: $('ussd-progress-view'), ussdResult: $('ussd-result-view'),
+  ussdLine1: $('ussd-line1'), ussdLine2: $('ussd-line2'),
+  ussdTitle: $('ussd-title'), ussdBody: $('ussd-body'),
+  ussdCancel: $('ussd-cancel'), ussdOk: $('ussd-ok'),
   callScreen: $('call-screen'), callAvatar: $('call-avatar'), callStatus: $('call-status'),
   callNumber: $('call-number'), cbMute: $('cb-mute'), cbKeypad: $('cb-keypad'),
   cbSpeaker: $('cb-speaker'), cbHold: $('cb-hold'), cbMore: $('cb-more'), cbHangup: $('cb-hangup'),
@@ -487,9 +500,9 @@ var els = {
   toast: $('toast')
 };
 
-/* ============ Данные (белорусские номера, как на скриншотах) ============ */
-var AV_COLORS = ['#4f8ef7','#e26d5a','#3fbf7f','#8e6be0','#e2a23f','#4fb6c9','#d96ab0','#6d7f8f'];
-var homeList = [
+/* ============ Данные (номера как на скриншотах, +375) ============ */
+var AV_COLORS = ['#4c3a52','#4a3527','#3f4a2f','#323f52','#433926','#3a374f','#4a2f3e','#37444a'];
+var homeItems = [
   { n:'Мама',       num:'+375 29 228-37-72', raw:'+375292283772', t:'in',  when:'Сегодня', c:0 },
   { n:'Борисов',    num:'+375 29 348-89-60', raw:'+375293488960', t:'out', when:'Сегодня', c:1 },
   { n:'Отец',       num:'+375 33 605-28-40', raw:'+375336052840', t:'miss',when:'Вчера',    c:2 },
@@ -527,7 +540,7 @@ function playTone(f1, f2, dur, vol){
   var c = actx(); if (!c) return;
   var t = c.currentTime;
   var g = c.createGain(); g.connect(c.destination);
-  g.gain.setValueAtTime(vol || 0.22, t);
+  g.gain.setValueAtTime(vol || 0.2, t);
   g.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.02);
   [f1, f2].forEach(function(f){
     if (!f) return;
@@ -538,29 +551,35 @@ function playTone(f1, f2, dur, vol){
 }
 var DTMF = { '1':[697,1209], '2':[697,1336], '3':[697,1477], '4':[770,1209], '5':[770,1336], '6':[770,1477],
              '7':[852,1209], '8':[852,1336], '9':[852,1477], '0':[941,1336], '*':[941,1209], '#':[941,1477] };
-function keySound(k){ if (bool(S.sound)){ var f = DTMF[k]; if (f) playTone(f[0], f[1], 0.16, 0.22); } }
+function keySound(k){ if (bool(S.sound)){ var f = DTMF[k]; if (f) playTone(f[0], f[1], 0.16, 0.2); } }
 function vibrate(ms){
   if (!bool(S.vibrate)) return;
   try { if (navigator.vibrate) navigator.vibrate(ms); } catch(e){}
 }
 function startRing(){
   if (!bool(S.sound)) return;
-  playTone(425, 0, 1.0, 0.30);
-  ringTimer = setInterval(function(){ playTone(425, 0, 1.0, 0.30); }, 4000);
+  playTone(425, 0, 1.0, 0.3);
+  ringTimer = setInterval(function(){ playTone(425, 0, 1.0, 0.3); }, 4000);
 }
 function stopRing(){ if (ringTimer){ clearInterval(ringTimer); ringTimer = null; } }
 
-/* ============ Клавиатура (строим HTML один раз, вставляем в две панели) ============ */
+/* ============ Клавиатура: цифра + латиница + кириллица (как на скриншоте) ============ */
 function buildKeypadHtml(){
   var rows = [
-    ['1',''], ['2','ABC'], ['3','DEF'],
-    ['4','GHI'], ['5','JKL'], ['6','MNO'],
-    ['7','PQRS'], ['8','TUV'], ['9','WXYZ'],
-    ['*',''], ['0','+'], ['#','']
+    ['1','',''], ['2','ABC','АБВГ'], ['3','DEF','ДЕЖЗ'],
+    ['4','GHI','ИЙКЛ'], ['5','JKL','МНОП'], ['6','MNO','РСТУ'],
+    ['7','PQRS','ФХЦЧ'], ['8','TUV','ШЩЪЫ'], ['9','WXYZ','ЬЭЮЯ'],
+    ['*','',''], ['0','+',''], ['#','','']
   ];
   return rows.map(function(r){
-    return '<button class="key" data-key="' + r[0] + '"><span class="k-num">' + r[0] + '</span>' +
-      (r[1] ? '<span class="k-letters">' + r[1] + '</span>' : '') + '</button>';
+    var letters = '';
+    if (r[1] || r[2]){
+      letters = '<span class="k-letters">' +
+        (r[1] ? '<span class="k-lat">' + r[1] + '</span>' : '') +
+        (r[2] ? '<span class="k-cyr">' + r[2] + '</span>' : '') +
+        '</span>';
+    }
+    return '<button class="key" data-key="' + r[0] + '"><span class="k-num">' + r[0] + '</span>' + letters + '</button>';
   }).join('');
 }
 
@@ -585,19 +604,15 @@ function switchTab(tab){
 /* ============ Список «Рекомендуемые» ============ */
 function renderHome(filter){
   filter = (filter || '').toLowerCase();
-  els.homeList.innerHTML = homeList.filter(function(x){
+  els.homeList.innerHTML = homeItems.filter(function(x){
     return (x.n + ' ' + x.num).toLowerCase().indexOf(filter) !== -1;
   }).map(function(x){
     var miss = x.t === 'miss';
-    var phoneIco = miss
-      ? '<svg width="17" height="17" viewBox="0 0 24 24" fill="#f28b82"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.7l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.51-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z" transform="rotate(135 12 12)"/></svg>'
-      : '<svg width="17" height="17" viewBox="0 0 24 24" fill="#3ddc84"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>';
     return '<div class="li" data-raw="' + x.raw + '">' +
       '<div class="avatar" style="background:' + AV_COLORS[x.c % AV_COLORS.length] + '">' + initials(x.n) + '</div>' +
       '<div class="li-main"><div class="li-name">' + x.n + '</div>' +
-      '<div class="li-sub">' + (x.t === 'miss' ? 'Пропущенный · ' : 'Мобильный · ') + x.num + '</div></div>' +
-      '<div class="li-right"><span>' + x.when + '</span>' +
-      '<span class="call-ico' + (miss ? ' miss' : '') + '">' + phoneIco + '</span></div></div>';
+      '<div class="li-sub">' + (miss ? 'Пропущенный · ' : 'Мобильный · ') + x.num + '</div></div>' +
+      '<div class="li-right">' + x.when + '</div></div>';
   }).join('') || '<div class="empty-pad">Ничего не найдено</div>';
 }
 function initials(name){
@@ -628,7 +643,7 @@ function formatDisplay(s){
   var a, b, c, e, out = prefix;
   if (prefix === '+375 '){
     a = local.slice(0, 2); b = local.slice(2, 5); c = local.slice(5, 7); e = local.slice(7, 9);
-    if (a.length) out += a.length === 2 ? '(' + a + ')' : a;
+    out += a.length === 2 ? '(' + a + ')' : a;
   } else {
     a = local.slice(0, 3); b = local.slice(3, 6); c = local.slice(6, 8); e = local.slice(8, 10);
     if (a.length) out += a.length === 3 ? '(' + a + ')' : a;
@@ -642,6 +657,9 @@ function renderNumber(){
   els.numLabel.style.opacity = typed ? 0 : 1;
   els.numLabel.style.transition = 'opacity .2s';
   els.numDisplay.textContent = formatDisplay(typed);
+  /* меню действий над клавиатурой — как на скриншоте, когда набран номер */
+  var showMenu = typed.length > 0 && typed.indexOf('*') === -1 && typed.indexOf('#') === -1;
+  els.actionsMenu.style.display = showMenu ? 'flex' : 'none';
 }
 function pressKey(k){
   keySound(k); vibrate(15);
@@ -665,15 +683,15 @@ function doCall(){
   }
 }
 
-/* ============ USSD (стадии как в Android: ММ... → запрос → получен → ответ) ============ */
+/* ============ USSD: стадии как в Android ============ */
 function sendUssd(code){
   if (ussdOpen) return;
   ussdOpen = true;
   ussdStep = 0;
-  els.ussdTitle.textContent = code;
-  els.ussdBody.textContent = 'Запуск последовательности ММ…';
   els.ussdProgress.style.display = 'block';
-  els.ussdOk.style.display = 'none';
+  els.ussdResult.style.display = 'none';
+  els.ussdLine1.style.display = '';
+  els.ussdLine2.style.display = 'none';
   els.ussd.classList.add('show');
   vibrate(40);
   var delayMs = Math.max(1500, (parseInt(S.ussd_delay, 10) || 3) * 1000);
@@ -683,21 +701,24 @@ function sendUssd(code){
     var elapsed = Date.now() - t0;
     if (ussdStep === 0){
       ussdStep = 1;
-      els.ussdBody.textContent = 'Выполняется запрос USSD…';
-      ussdTimer = setTimeout(step, Math.min(900, Math.max(200, delayMs - elapsed - 500)));
+      els.ussdLine1.style.display = 'none';
+      els.ussdLine2.style.display = '';
+      ussdTimer = setTimeout(step, Math.min(900, Math.max(200, delayMs - elapsed - 400)));
     } else if (ussdStep === 1){
       ussdStep = 2;
-      els.ussdBody.textContent = 'Ответ получен.';
-      ussdTimer = setTimeout(step, Math.min(700, Math.max(150, delayMs - elapsed)));
+      ussdTimer = setTimeout(step, Math.min(500, Math.max(120, delayMs - elapsed)));
     } else {
       showUssdResult();
     }
-  }, 500);
+  }, 450);
 }
 function showUssdResult(){
   els.ussdProgress.style.display = 'none';
-  els.ussdBody.textContent = S.ussd_message || 'Ответ не получен.';
-  els.ussdOk.style.display = '';
+  els.ussdResult.style.display = 'block';
+  var msg = (S.ussd_message || '').split('\n');
+  if (!msg[0]) msg = ['Ответ'];
+  els.ussdTitle.textContent = msg[0];
+  els.ussdBody.textContent = msg.slice(1).join('\n');
   vibrate(60);
 }
 function cancelUssd(){
@@ -807,7 +828,7 @@ function tryPin(){
   }
 }
 
-/* ============ Toast ============ */
+/* ============ Toast / shake ============ */
 var toastTimer = null;
 function toast(msg){
   els.toast.textContent = msg;
@@ -822,7 +843,7 @@ function shake(el){
 
 /* ============ События ============ */
 function bind(){
-  /* Клавиатура — делегирование (работает для обеих панелей) */
+  /* Клавиатура — делегирование */
   document.addEventListener('click', function(e){
     var k = e.target.closest('.key');
     if (k && k.dataset.key){
@@ -831,9 +852,21 @@ function bind(){
       return;
     }
     if (e.target.closest('.call-btn')){ doCall(); return; }
+    var act = e.target.closest('.act');
+    if (act){
+      var key = act.dataset.act;
+      if (key === 'msg'){ toast('Чат не настроен'); }
+      else if (key === 'video'){ toast('Видеовстреча не настроена'); }
+      else {
+        if (!typed){ toast('Наберите номер'); return; }
+        toast('Контакт «' + formatDisplay(typed) + '» добавлен');
+        typed = ''; renderNumber();
+      }
+      return;
+    }
   });
 
-  /* Долгое нажатие на «0» → «+» */
+  /* Долгое нажатие «0» → «+» */
   document.querySelectorAll('.key[data-key="0"]').forEach(function(k){
     var lp = null;
     function longPress0(){
@@ -848,7 +881,7 @@ function bind(){
     k.addEventListener('mouseleave', function(){ if (lp){ clearTimeout(lp); lp = null; } });
   });
 
-  /* Удаление (только на вкладке клавиатуры) */
+  /* Удалить (долгое = стереть всё) */
   var delSuppress = false;
   function delLong(){ delSuppress = true; clearAll(); }
   var delLp = null;
@@ -876,7 +909,7 @@ function bind(){
 
   els.searchInput.addEventListener('input', function(){ renderHome(els.searchInput.value); });
 
-  /* долгое нажатие на поиск или аватар = вход в настройки */
+  /* долгое нажатие на поиск/аватар = настройки */
   function bindLongPress(el, fn){
     var t = null;
     el.addEventListener('touchstart', function(){ t = setTimeout(fn, 600); });
@@ -922,7 +955,7 @@ function bind(){
   });
 }
 
-/* ============ Инициализация ============ */
+/* ============ Init ============ */
 function init(){
   loadSettings();
   els.homeKeypad.innerHTML = buildKeypadHtml();
@@ -939,7 +972,6 @@ function init(){
 }
 document.addEventListener('DOMContentLoaded', init);
 
-/* Назад (для WebView-обёртки, если будет) */
 window.__handleBack = function(){
   if (pinOpen){ closePin(); return 'handled'; }
   if (settingsOpen){ closeSettings(); return 'handled'; }
