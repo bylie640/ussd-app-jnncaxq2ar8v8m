@@ -59,28 +59,16 @@
     display:flex;align-items:center;justify-content:center;
     font-size:15px;font-weight:500;color:#fff;
     background:linear-gradient(135deg,#7e57c2,#4285f4);
-    cursor:pointer;position:relative;
+    cursor:pointer;
   }
-
-  /* ===== Tabs ===== */
-  nav#tabs{flex:0 0 auto;display:flex;padding:4px 0 0;}
-  .tab{
-    flex:1;background:none;border:none;color:var(--text-dim);
-    font-size:15px;font-weight:500;padding:12px 0 10px;position:relative;cursor:pointer;
-  }
-  .tab.active{color:var(--text);}
-  .tab.active::after{
-    content:"";position:absolute;left:50%;transform:translateX(-50%);
-    bottom:4px;width:26px;height:3px;border-radius:2px;background:var(--accent);
-  }
-  .tab.pulse::after{background:var(--accent);}
 
   /* ===== Panels ===== */
   main{flex:1;min-height:0;display:flex;flex-direction:column;}
   .panel{flex:1;min-height:0;display:none;flex-direction:column;animation:fade .18s ease;}
   .panel.active{display:flex;}
   @keyframes fade{from{opacity:0;}to{opacity:1;}}
-  .list{flex:1;overflow-y:auto;padding:4px 0 24px;}
+  .section-title{font-size:16px;font-weight:500;padding:12px 16px 4px;}
+  .list{flex:1;overflow-y:auto;padding:0 0 4px;}
   .li{
     display:flex;align-items:center;gap:14px;padding:11px 16px;cursor:pointer;
     border-bottom:1px solid var(--divider);
@@ -95,51 +83,71 @@
   .li-name{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .li-sub{font-size:13px;color:var(--text-dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .li-right{flex:0 0 auto;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-dim);}
-  .call-ico{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
-  .empty-pad{flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:14px;}
+  .call-ico{
+    width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    background:rgba(61,220,132,.15);color:#3ddc84;
+  }
+  .call-ico.miss{background:rgba(234,67,53,.15);color:#f28b82;}
+  .empty-pad{flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:14px;min-height:80px;}
 
-  /* ===== Dialpad ===== */
-  #dialpad-panel{overflow:hidden;}
-  #number-area{
-    flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;
-    padding:8px 28px 10px;min-height:0;
-  }
-  #number-label{font-size:13px;color:var(--text-dim);margin-bottom:6px;}
-  #number-display{
-    font-size:clamp(26px,7vw,34px);letter-spacing:.5px;max-width:100%;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:42px;text-align:center;
-  }
-  #dialpad-actions{
-    flex:0 0 auto;display:flex;justify-content:center;gap:64px;align-items:center;padding-bottom:8px;
-  }
-  .icon-btn{
-    width:52px;height:52px;border-radius:50%;border:none;background:none;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;color:var(--text);
-  }
-  .icon-btn svg{opacity:.85;}
-  .icon-btn:active{background:rgba(255,255,255,.1);}
-  #keypad{
+  /* ===== Keypad (общий) ===== */
+  .keypad{
     flex:0 0 auto;display:grid;grid-template-columns:repeat(3,1fr);
-    row-gap:6px;padding:0 20px 2px;
+    row-gap:4px;padding:6px 20px 2px;
   }
   .key{
-    justify-self:center;width:min(19vw,72px);height:min(19vw,72px);border-radius:50%;
+    justify-self:center;width:min(17vw,64px);height:min(17vw,64px);border-radius:50%;
     border:none;background:transparent;color:var(--text);cursor:pointer;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
     transition:background .12s;
   }
   .key:active{background:rgba(255,255,255,.14);}
-  .k-num{font-size:clamp(24px,6.5vw,28px);font-weight:400;line-height:1;}
+  .k-num{font-size:clamp(22px,6vw,27px);font-weight:400;line-height:1;}
   .k-letters{font-size:9px;letter-spacing:1px;color:var(--text-dim);line-height:1;}
-  #call-row{flex:0 0 auto;display:flex;justify-content:center;padding:12px 0 calc(14px + env(safe-area-inset-bottom,0px));}
-  #btn-call{
-    width:62px;height:62px;border-radius:50%;border:none;cursor:pointer;
+  .call-row{flex:0 0 auto;display:flex;justify-content:center;padding:10px 0 calc(10px + env(safe-area-inset-bottom,0px));}
+  .call-btn{
+    width:60px;height:60px;border-radius:50%;border:none;cursor:pointer;
     background:var(--green);display:flex;align-items:center;justify-content:center;
     box-shadow:0 4px 18px rgba(61,220,132,.28);
   }
-  #btn-call svg{width:30px;height:30px;fill:#04361d;}
-  #btn-call:active{transform:scale(.94);}
-  #btn-call.ring{box-shadow:0 0 0 12px rgba(61,220,132,.18);}
+  .call-btn svg{width:29px;height:29px;fill:#04361d;}
+  .call-btn:active{transform:scale(.94);}
+
+  /* ===== Dialpad (вкладка) ===== */
+  #dialpad-panel{overflow:hidden;}
+  #number-area{
+    flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;
+    padding:8px 28px 6px;min-height:0;
+  }
+  #number-label{font-size:13px;color:var(--text-dim);margin-bottom:6px;}
+  #number-display{
+    font-size:clamp(24px,7vw,32px);letter-spacing:.5px;max-width:100%;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:40px;text-align:center;
+  }
+  #dialpad-actions{
+    flex:0 0 auto;display:flex;justify-content:center;gap:56px;align-items:center;padding-bottom:4px;
+  }
+  .icon-btn{
+    width:50px;height:50px;border-radius:50%;border:none;background:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;color:var(--text);
+  }
+  .icon-btn svg{opacity:.85;}
+  .icon-btn:active{background:rgba(255,255,255,.1);}
+
+  /* ===== Bottom tabs ===== */
+  #bottom-tabs{
+    flex:0 0 auto;display:flex;padding:4px 0 calc(6px + env(safe-area-inset-bottom,0px));
+    border-top:1px solid var(--divider);
+  }
+  .btab{
+    flex:1;background:none;border:none;color:var(--text-dim);
+    font-size:14px;font-weight:500;padding:9px 0 7px;cursor:pointer;position:relative;
+  }
+  .btab.active{color:var(--text);}
+  .btab.active::before{
+    content:"";position:absolute;top:-5px;left:50%;transform:translateX(-50%);
+    width:30px;height:3px;border-radius:2px;background:var(--accent);
+  }
 
   /* ===== Overlay bases ===== */
   .overlay{
@@ -148,22 +156,19 @@
   }
   .overlay.show{display:flex;animation:fade .15s ease;}
   .mat-dialog{
-    width:100%;max-width:320px;background:var(--surface);
+    width:100%;max-width:330px;background:var(--surface);
     border-radius:18px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.6);
     border:1px solid var(--divider);animation:pop .18s ease;
   }
   @keyframes pop{from{transform:scale(.94);opacity:0;}to{transform:scale(1);opacity:1;}}
-  .mat-dialog h3{
-    font-size:17px;font-weight:500;padding:18px 20px 6px;text-align:center;
-  }
-  .mat-dialog .body{padding:6px 20px 14px;font-size:15px;color:var(--text);line-height:1.5;text-align:center;white-space:pre-line;word-break:break-word;}
+  .mat-dialog h3{font-size:17px;font-weight:500;padding:18px 20px 4px;text-align:center;}
+  .mat-dialog .body{padding:8px 20px 14px;font-size:15px;color:var(--text);line-height:1.55;text-align:center;white-space:pre-line;word-break:break-word;}
   .dialog-btns{display:flex;justify-content:center;padding:4px 8px 10px;gap:8px;}
   .dbtn{
     min-width:88px;padding:10px 16px;border:none;border-radius:20px;cursor:pointer;
     font-size:15px;font-weight:500;background:#38383d;color:#c9c9cf;
   }
   .dbtn.primary{background:rgba(42,124,255,.22);color:#8ab4f8;}
-  .dbtn.danger{background:rgba(234,67,53,.2);color:#f28b82;}
   .dbtn:active{filter:brightness(1.3);}
   .progress{height:3px;background:rgba(255,255,255,.08);position:relative;}
   .progress .ind{
@@ -184,10 +189,10 @@
   #call-status{margin-top:26px;font-size:18px;color:var(--text);min-height:26px;}
   #call-number{margin-top:8px;font-size:26px;letter-spacing:.3px;text-align:center;padding:0 24px;}
   #call-btns{
-    margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:26px;
-    padding-bottom:calc(34px + env(safe-area-inset-bottom,0px));
+    margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:22px;
+    padding-bottom:calc(30px + env(safe-area-inset-bottom,0px));
   }
-  .cbtn-row{display:flex;gap:30px;}
+  .cbtn-row{display:flex;gap:24px;}
   .cbtn{
     width:62px;height:62px;border-radius:50%;border:none;background:rgba(255,255,255,.1);
     color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
@@ -260,7 +265,7 @@
 
   /* ===== Toast ===== */
   #toast{
-    position:absolute;left:50%;bottom:calc(48px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);
+    position:absolute;left:50%;bottom:calc(56px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);
     background:#3c4043;color:#fff;font-size:14px;padding:10px 18px;border-radius:22px;
     z-index:90;opacity:0;pointer-events:none;transition:opacity .25s, transform .25s;white-space:nowrap;max-width:90%;
   }
@@ -285,22 +290,21 @@
     <div id="avatar">Т</div>
   </header>
 
-  <nav id="tabs">
-    <button class="tab" data-tab="recents">Недавние</button>
-    <button class="tab" data-tab="contacts">Контакты</button>
-    <button class="tab active" data-tab="dialpad">Клавиатура</button>
-  </nav>
-
   <main>
-    <section id="recents-panel" class="panel">
-      <div class="list" id="recents-list"></div>
+    <!-- Главный экран -->
+    <section id="home-panel" class="panel active">
+      <div class="section-title">Рекомендуемые</div>
+      <div class="list" id="home-list"></div>
+      <div id="home-keypad" class="keypad"></div>
+      <div class="call-row">
+        <button class="call-btn" title="Позвонить">
+          <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        </button>
+      </div>
     </section>
 
-    <section id="contacts-panel" class="panel">
-      <div class="list" id="contacts-list"></div>
-    </section>
-
-    <section id="dialpad-panel" class="panel active">
+    <!-- Клавиатура -->
+    <section id="dialpad-panel" class="panel">
       <div id="number-area">
         <div id="number-label">Наберите номер</div>
         <div id="number-display"></div>
@@ -313,33 +317,26 @@
           <svg width="28" height="28" viewBox="0 0 24 24" fill="#9e9ea4"><path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z"/></svg>
         </button>
       </div>
-      <div id="keypad">
-        <button class="key" data-key="1"><span class="k-num">1</span></button>
-        <button class="key" data-key="2"><span class="k-num">2</span><span class="k-letters">ABC</span></button>
-        <button class="key" data-key="3"><span class="k-num">3</span><span class="k-letters">DEF</span></button>
-        <button class="key" data-key="4"><span class="k-num">4</span><span class="k-letters">GHI</span></button>
-        <button class="key" data-key="5"><span class="k-num">5</span><span class="k-letters">JKL</span></button>
-        <button class="key" data-key="6"><span class="k-num">6</span><span class="k-letters">MNO</span></button>
-        <button class="key" data-key="7"><span class="k-num">7</span><span class="k-letters">PQRS</span></button>
-        <button class="key" data-key="8"><span class="k-num">8</span><span class="k-letters">TUV</span></button>
-        <button class="key" data-key="9"><span class="k-num">9</span><span class="k-letters">WXYZ</span></button>
-        <button class="key" data-key="*"><span class="k-num">*</span></button>
-        <button class="key" data-key="0"><span class="k-num">0</span><span class="k-letters">+</span></button>
-        <button class="key" data-key="#"><span class="k-num">#</span></button>
-      </div>
-      <div id="call-row">
-        <button id="btn-call" title="Позвонить">
+      <div id="dialpad-keypad" class="keypad"></div>
+      <div class="call-row">
+        <button class="call-btn" title="Позвонить">
           <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
         </button>
       </div>
     </section>
   </main>
 
+  <!-- Нижние вкладки (как на скриншотах) -->
+  <nav id="bottom-tabs">
+    <button class="btab active" data-tab="home">Главный экран</button>
+    <button class="btab" data-tab="dialpad">Клавиатура</button>
+  </nav>
+
   <!-- USSD dialog -->
   <div id="ussd-overlay" class="overlay">
     <div class="mat-dialog">
       <h3 id="ussd-title">Запрос USSD</h3>
-      <div class="body" id="ussd-body">Идёт обмен данными с сетью…</div>
+      <div class="body" id="ussd-body">Запуск последовательности ММ…</div>
       <div class="dialog-btns">
         <button class="dbtn" id="ussd-cancel">Отмена</button>
         <button class="dbtn primary" id="ussd-ok" style="display:none;">OK</button>
@@ -365,8 +362,7 @@
           <button class="cbtn" id="cb-more"><svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg><span>Ещё</span></button>
         </div>
         <button id="cb-hangup"><svg viewBox="0 0 24 24"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.7l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.51-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg></button>
-        </div>
-      <div style="height:20px"></div>
+      </div>
     </div>
   </div>
 
@@ -438,27 +434,28 @@
 
 <script>
 'use strict';
-/* ============ Хранилище (сохраняется между сеансами) ============ */
+/* ============ Хранилище ============ */
 var store = {
   get: function(k){ try { return localStorage.getItem('ussd.' + k); } catch(e){ return null; } },
   set: function(k, v){ try { localStorage.setItem('ussd.' + k, String(v)); } catch(e){} }
 };
 var DEFAULTS = {
-  ussd_code:  '*147#',
-  ussd_message:'Услуга успешно активирована.\nВаш тариф: «Максимум»\nЛимит интернета: 50 ГБ\nБаланс: 245,50 ₽',
-  ussd_delay: '3',
-  pin:        '0000',
-  sound:      '1',
-  vibrate:    '1',
-  app_name:   'Телефон'
+  ussd_code:   '*147#',
+  ussd_message:'Данные оператора\nВаш номер: +375 44 542-79-32\nСтатус: активно\n\nТариф: «Безлимит на звонки»',
+  ussd_delay:  '3',
+  pin:         '0000',
+  sound:       '1',
+  vibrate:     '1',
+  app_name:    'Телефон'
 };
 var S = {};
 
 /* ============ Состояние ============ */
 var typed = '';
-var currentTab = 'dialpad';
+var currentTab = 'home';
 var ussdOpen = false;
 var ussdTimer = null;
+var ussdStep = null;
 var callActive = false;
 var callTimerInt = null;
 var callSec = 0;
@@ -472,12 +469,11 @@ var $ = function(id){ return document.getElementById(id); };
 var els = {
   searchPill: $('search-pill'), searchHint: $('search-hint'), searchInput: $('search-input'),
   avatar: $('avatar'),
-  tabs: document.querySelectorAll('.tab'),
-  recentsPanel: $('recents-panel'), contactsPanel: $('contacts-panel'), dialpadPanel: $('dialpad-panel'),
-  recentsList: $('recents-list'), contactsList: $('contacts-list'),
+  bTabs: document.querySelectorAll('.btab'),
+  homePanel: $('home-panel'), dialpadPanel: $('dialpad-panel'),
+  homeList: $('home-list'), homeKeypad: $('home-keypad'), dialpadKeypad: $('dialpad-keypad'),
   numLabel: $('number-label'), numDisplay: $('number-display'),
-  btnAdd: $('btn-add'), btnDelete: $('btn-delete'), btnCall: $('btn-call'),
-  keys: document.querySelectorAll('.key'),
+  btnAdd: $('btn-add'), btnDelete: $('btn-delete'),
   ussd: $('ussd-overlay'), ussdTitle: $('ussd-title'), ussdBody: $('ussd-body'),
   ussdProgress: $('ussd-progress'), ussdCancel: $('ussd-cancel'), ussdOk: $('ussd-ok'),
   callScreen: $('call-screen'), callAvatar: $('call-avatar'), callStatus: $('call-status'),
@@ -491,25 +487,15 @@ var els = {
   toast: $('toast')
 };
 
-/* ============ Данные списков ============ */
+/* ============ Данные (белорусские номера, как на скриншотах) ============ */
 var AV_COLORS = ['#4f8ef7','#e26d5a','#3fbf7f','#8e6be0','#e2a23f','#4fb6c9','#d96ab0','#6d7f8f'];
-var recents = [
-  { n:'Мама',          num:'+7 921 555-01-23', raw:'+79215550123', t:'in',  when:'Сегодня', c:0 },
-  { n:'Сергей',        num:'+7 911 244-08-90', raw:'+79112440890', t:'out', when:'Сегодня', c:1 },
-  { n:'Такси',         num:'+7 812 333-44-55', raw:'+78123334455', t:'miss',when:'12:48',    c:2 },
-  { n:'Иван Петров',   num:'+7 903 777-11-22', raw:'+79037771122', t:'in',  when:'Вчера',    c:3 },
-  { n:'Клиника «Здоровье»', num:'+7 495 123-45-67', raw:'+74951234567', t:'out', when:'Вчера', c:4 },
-  { n:'Банк',          num:'8 800 555-35-35',  raw:'88005553535',   t:'miss',when:'Пн',       c:5 },
-  { n:'Ольга',         num:'+7 903 888-99-00', raw:'+79038889900',  t:'in',  when:'Пт',       c:6 }
-];
-var contacts = [
-  { n:'Анна Смирнова', p:'+7 921 123-45-67', raw:'+79211234567', tag:'Мобильный', c:0 },
-  { n:'Дмитрий Козлов',p:'+7 911 222-33-44', raw:'+79112223344', tag:'Мобильный', c:1 },
-  { n:'Мама',          p:'+7 921 555-01-23', raw:'+79215550123', tag:'Домашний',  c:2 },
-  { n:'Ольга',         p:'+7 903 888-99-00', raw:'+79038889900', tag:'Мобильный', c:3 },
-  { n:'Работа',        p:'+7 812 640-20-20', raw:'+78126402020', tag:'Рабочий',   c:4 },
-  { n:'Такси',         p:'+7 812 333-44-55', raw:'+78123334455', tag:'Мобильный', c:5 },
-  { n:'Поликлиника',   p:'+7 495 739-00-73', raw:'+74957390073', tag:'Городской', c:6 }
+var homeList = [
+  { n:'Мама',       num:'+375 29 228-37-72', raw:'+375292283772', t:'in',  when:'Сегодня', c:0 },
+  { n:'Борисов',    num:'+375 29 348-89-60', raw:'+375293488960', t:'out', when:'Сегодня', c:1 },
+  { n:'Отец',       num:'+375 33 605-28-40', raw:'+375336052840', t:'miss',when:'Вчера',    c:2 },
+  { n:'Ольга',      num:'+375 44 542-79-32', raw:'+375445427932', t:'in',  when:'Вчера',    c:3 },
+  { n:'Работа',     num:'+375 17 210-45-67', raw:'+375172104567', t:'out', when:'Пн',       c:4 },
+  { n:'Поликлиника',num:'+375 17 290-03-12', raw:'+375172900312', t:'miss',when:'Пт',       c:5 }
 ];
 
 /* ============ Настройки ============ */
@@ -564,57 +550,54 @@ function startRing(){
 }
 function stopRing(){ if (ringTimer){ clearInterval(ringTimer); ringTimer = null; } }
 
-/* ============ Вкладки ============ */
-function switchTab(tab){
-  currentTab = tab;
-  els.tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.tab === tab); });
-  els.recentsPanel.classList.toggle('active', tab === 'recents');
-  els.contactsPanel.classList.toggle('active', tab === 'contacts');
-  els.dialpadPanel.classList.toggle('active', tab === 'dialpad');
-  if (tab === 'recents' || tab === 'contacts'){
-    els.searchInput.style.display = 'block';
-    els.searchHint.style.display = 'none';
-    els.searchInput.value = '';
-  } else {
-    els.searchInput.style.display = 'none';
-    els.searchHint.style.display = '';
-  }
-}
-
-/* ============ Списки ============ */
-function renderRecents(filter){
-  filter = filter || '';
-  filter = filter.toLowerCase();
-  els.recentsList.innerHTML = renderBaseRecents(recents.filter(function(r){
-    return (r.n + ' ' + r.num).toLowerCase().indexOf(filter) !== -1;
-  }));
-}
-function renderBaseRecents(arr){
-  if (!arr.length){ return '<div class="empty-pad">Ничего не найдено</div>'; }
-  return arr.map(function(r){
-    var ic = '';
-    if (r.t === 'in')  ic = '<svg width="15" height="15" viewBox="0 0 24 24" fill="#3ddc84"><path d="M16.49 15.5v-4.99c0-.37-.3-.68-.68-.68-.18 0-.35.07-.47.18l-1.86 1.86-2.89-2.9 1.87-1.87c.11-.11.19-.3.19-.47 0-.38-.31-.68-.69-.68H6.5c-.38 0-.68.3-.68.68v5c0 .38.3.68.68.68.18 0 .36-.07.47-.18l1.86-1.86 2.9 2.9-1.88 1.87c-.11.11-.17.29-.17.47 0 .38.31.68.68.68h5c.38 0 .68-.3.68-.68z"/></svg>';
-    if (r.t === 'out') ic = '<svg width="15" height="15" viewBox="0 0 24 24" fill="#8ab4f8"><path d="M19 17v-5c0-.38-.3-.68-.68-.68-.18 0-.35.07-.47.18l-1.86 1.86-2.9-2.9 1.9-1.9c.11-.11.17-.29.17-.47 0-.38-.3-.68-.68-.68H10c-.38 0-.68.3-.68.68v5c0 .38.3.68.68.68.18 0 .36-.07.47-.18l1.86-1.86 2.9 2.9-1.9 1.9c-.11.11-.17.29-.17.47 0 .38.3.68.68.68z"/></svg>';
-    if (r.t === 'miss') ic = '<svg width="15" height="15" viewBox="0 0 24 24" fill="#f28b82"><path d="M19.59 7L12 14.59 6.41 9H11V7H3v8h2v-4.59l7 7 9-9z"/></svg>';
-    var dot = ['rgba(255,255,255,.18)','rgba(255,255,255,.18)','#f28b82'][['in','out','miss'].indexOf(r.t)] || 'rgba(255,255,255,.18)';
-    return '<div class="li" data-raw="' + r.raw + '">' +
-      '<div class="avatar" style="background:' + AV_COLORS[r.c % AV_COLORS.length] + '">' + initials(r.n) + '</div>' +
-      '<div class="li-main"><div class="li-name">' + r.n + '</div><div class="li-sub">' + r.num + '</div></div>' +
-      '<div class="li-right"><span>' + r.when + '</span>' +
-      '<span class="call-ico" style="background:' + dot + '">' + ic + '</span></div></div>';
+/* ============ Клавиатура (строим HTML один раз, вставляем в две панели) ============ */
+function buildKeypadHtml(){
+  var rows = [
+    ['1',''], ['2','ABC'], ['3','DEF'],
+    ['4','GHI'], ['5','JKL'], ['6','MNO'],
+    ['7','PQRS'], ['8','TUV'], ['9','WXYZ'],
+    ['*',''], ['0','+'], ['#','']
+  ];
+  return rows.map(function(r){
+    return '<button class="key" data-key="' + r[0] + '"><span class="k-num">' + r[0] + '</span>' +
+      (r[1] ? '<span class="k-letters">' + r[1] + '</span>' : '') + '</button>';
   }).join('');
 }
 
-function renderContacts(filter){
-  filter = filter || '';
-  filter = filter.toLowerCase();
-  els.contactsList.innerHTML = contacts.filter(function(x){
-    return (x.n + ' ' + x.p).toLowerCase().indexOf(filter) !== -1;
+/* ============ Вкладки ============ */
+function switchTab(tab){
+  currentTab = tab;
+  els.bTabs.forEach(function(t){ t.classList.toggle('active', t.dataset.tab === tab); });
+  els.homePanel.classList.toggle('active', tab === 'home');
+  els.dialpadPanel.classList.toggle('active', tab === 'dialpad');
+  if (tab === 'home'){
+    els.searchInput.style.display = 'block';
+    els.searchHint.style.display = 'none';
+    els.searchInput.value = '';
+    renderHome('');
+  } else {
+    els.searchInput.style.display = 'none';
+    els.searchHint.style.display = '';
+    renderNumber();
+  }
+}
+
+/* ============ Список «Рекомендуемые» ============ */
+function renderHome(filter){
+  filter = (filter || '').toLowerCase();
+  els.homeList.innerHTML = homeList.filter(function(x){
+    return (x.n + ' ' + x.num).toLowerCase().indexOf(filter) !== -1;
   }).map(function(x){
+    var miss = x.t === 'miss';
+    var phoneIco = miss
+      ? '<svg width="17" height="17" viewBox="0 0 24 24" fill="#f28b82"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.7l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.51-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z" transform="rotate(135 12 12)"/></svg>'
+      : '<svg width="17" height="17" viewBox="0 0 24 24" fill="#3ddc84"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>';
     return '<div class="li" data-raw="' + x.raw + '">' +
       '<div class="avatar" style="background:' + AV_COLORS[x.c % AV_COLORS.length] + '">' + initials(x.n) + '</div>' +
-      '<div class="li-main"><div class="li-name">' + x.n + '</div><div class="li-sub">' + x.tag + ' · ' + x.p + '</div></div>' +
-      '<div style="flex:0 0 auto"><svg width="26" height="26" viewBox="0 0 24 24" fill="#8ab4f8"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div></div>';
+      '<div class="li-main"><div class="li-name">' + x.n + '</div>' +
+      '<div class="li-sub">' + (x.t === 'miss' ? 'Пропущенный · ' : 'Мобильный · ') + x.num + '</div></div>' +
+      '<div class="li-right"><span>' + x.when + '</span>' +
+      '<span class="call-ico' + (miss ? ' miss' : '') + '">' + phoneIco + '</span></div></div>';
   }).join('') || '<div class="empty-pad">Ничего не найдено</div>';
 }
 function initials(name){
@@ -628,19 +611,28 @@ function fillDialpad(raw){
   vibrate(15);
 }
 
-/* ============ Клавиатура ============ */
+/* ============ Номер ============ */
 function formatDisplay(s){
   if (!s) return '';
   if (/[*#]/.test(s)) return s;
   var raw = s.replace(/[^\d+]/g, '');
-  if (!raw) return s;
+  if (!raw) return '';
   var plus = raw[0] === '+';
   var n = plus ? raw.slice(1) : raw;
-  if ((plus && n[0] !== '7') || (!plus && n[0] !== '8')) return raw;
-  var local = n.slice(1);
-  var a = local.slice(0,3), b = local.slice(3,6), c = local.slice(6,8), e = local.slice(8,10);
-  var out = plus ? '+7' : '8';
-  if (a.length) out += a.length === 3 ? ' (' + a + ')' : ' ' + a;
+  var prefix = '';
+  if (plus && n.slice(0, 3) === '375'){ prefix = '+375 '; }
+  else if (plus && n[0] === '7'){ prefix = '+7 '; }
+  else if (!plus && n[0] === '8'){ prefix = '8 '; }
+  else return raw;
+  var local = n.slice(prefix === '8 ' ? 1 : (prefix === '+375 ' ? 3 : 1));
+  var a, b, c, e, out = prefix;
+  if (prefix === '+375 '){
+    a = local.slice(0, 2); b = local.slice(2, 5); c = local.slice(5, 7); e = local.slice(7, 9);
+    if (a.length) out += a.length === 2 ? '(' + a + ')' : a;
+  } else {
+    a = local.slice(0, 3); b = local.slice(3, 6); c = local.slice(6, 8); e = local.slice(8, 10);
+    if (a.length) out += a.length === 3 ? '(' + a + ')' : a;
+  }
   if (b.length) out += ' ' + b;
   if (c.length) out += '-' + c;
   if (e.length) out += '-' + e;
@@ -668,32 +660,45 @@ function doCall(){
   if (!code){ shake(els.numDisplay); vibrate(60); return; }
   if (code.indexOf('*') !== -1 || code.indexOf('#') !== -1){
     sendUssd(code);
-  } else if (/^\d{1,4}$/.test(code)){
-    /* служебные короткие номера — просто экран вызова */
-    startCall(code);
   } else {
     startCall(code);
   }
 }
 
-/* ============ USSD ============ */
+/* ============ USSD (стадии как в Android: ММ... → запрос → получен → ответ) ============ */
 function sendUssd(code){
   if (ussdOpen) return;
   ussdOpen = true;
+  ussdStep = 0;
   els.ussdTitle.textContent = code;
-  els.ussdBody.textContent = 'Идёт обмен данными с сетью…';
+  els.ussdBody.textContent = 'Запуск последовательности ММ…';
   els.ussdProgress.style.display = 'block';
   els.ussdOk.style.display = 'none';
   els.ussd.classList.add('show');
   vibrate(40);
-  var delayMs = Math.max(500, (parseInt(S.ussd_delay, 10) || 3) * 1000);
-  ussdTimer = setTimeout(function(){
+  var delayMs = Math.max(1500, (parseInt(S.ussd_delay, 10) || 3) * 1000);
+  var t0 = Date.now();
+  ussdTimer = setTimeout(function step(){
     if (!ussdOpen) return;
-    els.ussdProgress.style.display = 'none';
-    els.ussdBody.textContent = S.ussd_message || 'Ответ не получен.';
-    els.ussdOk.style.display = '';
-    vibrate(60);
-  }, delayMs);
+    var elapsed = Date.now() - t0;
+    if (ussdStep === 0){
+      ussdStep = 1;
+      els.ussdBody.textContent = 'Выполняется запрос USSD…';
+      ussdTimer = setTimeout(step, Math.min(900, Math.max(200, delayMs - elapsed - 500)));
+    } else if (ussdStep === 1){
+      ussdStep = 2;
+      els.ussdBody.textContent = 'Ответ получен.';
+      ussdTimer = setTimeout(step, Math.min(700, Math.max(150, delayMs - elapsed)));
+    } else {
+      showUssdResult();
+    }
+  }, 500);
+}
+function showUssdResult(){
+  els.ussdProgress.style.display = 'none';
+  els.ussdBody.textContent = S.ussd_message || 'Ответ не получен.';
+  els.ussdOk.style.display = '';
+  vibrate(60);
 }
 function cancelUssd(){
   ussdOpen = false;
@@ -723,16 +728,13 @@ function startCall(raw){
   setTimeout(function(){
     if (!callActive) return;
     stopRing();
-    els.callStatus.textContent = formatTime(0);
+    els.callStatus.textContent = '00:00';
     callTimerInt = setInterval(function(){
       callSec++;
-      els.callStatus.textContent = formatTime(callSec);
+      var m = Math.floor(callSec / 60), s = callSec % 60;
+      els.callStatus.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
     }, 1000);
   }, 2400);
-}
-function formatTime(sec){
-  var m = Math.floor(sec / 60), s = sec % 60;
-  return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
 }
 function hangUp(){
   if (!callActive) return;
@@ -745,11 +747,8 @@ function hangUp(){
     els.callScreen.classList.remove('show');
     typed = ''; renderNumber();
     document.title = 'Телефон';
-    resetCallButtons();
+    [els.cbMute, els.cbKeypad, els.cbSpeaker, els.cbHold, els.cbMore].forEach(function(b){ b.classList.remove('on'); });
   }, 900);
-}
-function resetCallButtons(){
-  [els.cbMute, els.cbKeypad, els.cbSpeaker, els.cbHold, els.cbMore].forEach(function(b){ b.classList.remove('on'); });
 }
 
 /* ============ Настройки ============ */
@@ -791,7 +790,7 @@ function resetSettings(){
 
 /* ============ PIN ============ */
 function openPin(){
-  if (pinOpen || settingsOpen || callActive) return;
+  if (pinOpen || settingsOpen || callActive || ussdOpen) return;
   pinOpen = true;
   els.pinInput.value = '';
   els.pinOverlay.classList.add('show');
@@ -801,7 +800,11 @@ function closePin(){ pinOpen = false; els.pinOverlay.classList.remove('show'); }
 function tryPin(){
   var entered = els.pinInput.value.trim();
   if (entered === S.pin){ closePin(); vibrate(20); openSettings(); }
-  else { toast('Неверный PIN'); vibrate(120); var d = els.pinOverlay.querySelector('.mat-dialog'); d.classList.remove('shake'); void d.offsetWidth; d.classList.add('shake'); }
+  else {
+    toast('Неверный PIN'); vibrate(120);
+    var d = els.pinOverlay.querySelector('.mat-dialog');
+    d.classList.remove('shake'); void d.offsetWidth; d.classList.add('shake');
+  }
 }
 
 /* ============ Toast ============ */
@@ -819,27 +822,33 @@ function shake(el){
 
 /* ============ События ============ */
 function bind(){
-  els.keys.forEach(function(k){
-    var suppress = false;
-    if (k.dataset.key === '0'){
-      var lp = null;
-      function longPress0(){
-        if (suppress) return;
-        suppress = true;
-        pressKey('+'); vibrate(30);
-      }
-      k.addEventListener('touchstart', function(){ lp = setTimeout(longPress0, 480); });
-      k.addEventListener('touchend', function(){ if (lp){ clearTimeout(lp); lp = null; } });
-      k.addEventListener('mousedown', function(){ lp = setTimeout(longPress0, 480); });
-      k.addEventListener('mouseup', function(){ if (lp){ clearTimeout(lp); lp = null; } });
-      k.addEventListener('mouseleave', function(){ if (lp){ clearTimeout(lp); lp = null; } });
-    }
-    k.addEventListener('click', function(){
-      if (suppress){ suppress = false; return; }
+  /* Клавиатура — делегирование (работает для обеих панелей) */
+  document.addEventListener('click', function(e){
+    var k = e.target.closest('.key');
+    if (k && k.dataset.key){
+      if (k.dataset.suppress === '1'){ delete k.dataset.suppress; return; }
       pressKey(k.dataset.key);
-    });
+      return;
+    }
+    if (e.target.closest('.call-btn')){ doCall(); return; }
   });
 
+  /* Долгое нажатие на «0» → «+» */
+  document.querySelectorAll('.key[data-key="0"]').forEach(function(k){
+    var lp = null;
+    function longPress0(){
+      if (k.dataset.suppress === '1') return;
+      k.dataset.suppress = '1';
+      pressKey('+'); vibrate(30);
+    }
+    k.addEventListener('touchstart', function(){ lp = setTimeout(longPress0, 480); });
+    k.addEventListener('touchend', function(){ if (lp){ clearTimeout(lp); lp = null; } });
+    k.addEventListener('mousedown', function(){ lp = setTimeout(longPress0, 480); });
+    k.addEventListener('mouseup', function(){ if (lp){ clearTimeout(lp); lp = null; } });
+    k.addEventListener('mouseleave', function(){ if (lp){ clearTimeout(lp); lp = null; } });
+  });
+
+  /* Удаление (только на вкладке клавиатуры) */
   var delSuppress = false;
   function delLong(){ delSuppress = true; clearAll(); }
   var delLp = null;
@@ -852,29 +861,20 @@ function bind(){
   els.btnDelete.addEventListener('mousedown', function(){ delLp = setTimeout(delLong, 480); });
   els.btnDelete.addEventListener('mouseup', function(){ if (delLp){ clearTimeout(delLp); delLp = null; } });
   els.btnDelete.addEventListener('mouseleave', function(){ if (delLp){ clearTimeout(delLp); delLp = null; } });
+
   els.btnAdd.addEventListener('click', function(){
     if (!typed){ toast('Наберите номер'); return; }
     toast('Контакт «' + formatDisplay(typed) + '» добавлен');
     typed = ''; renderNumber();
   });
 
-  els.btnCall.addEventListener('click', doCall);
+  els.bTabs.forEach(function(t){ t.addEventListener('click', function(){ switchTab(t.dataset.tab); }); });
 
-  els.tabs.forEach(function(t){ t.addEventListener('click', function(){ switchTab(t.dataset.tab); }); });
-
-  els.recentsList.addEventListener('click', function(e){
-    var li = e.target.closest('.li'); if (li) fillDialpad(li.dataset.raw);
-  });
-  els.contactsList.addEventListener('click', function(e){
+  els.homeList.addEventListener('click', function(e){
     var li = e.target.closest('.li'); if (li) fillDialpad(li.dataset.raw);
   });
 
-  els.searchInput.addEventListener('input', function(){
-    var q = els.searchInput.value;
-    if (currentTab === 'recents') renderRecents(q);
-    else renderContacts(q);
-  });
-  els.searchInput.addEventListener('keydown', function(e){ e.stopPropagation(); });
+  els.searchInput.addEventListener('input', function(){ renderHome(els.searchInput.value); });
 
   /* долгое нажатие на поиск или аватар = вход в настройки */
   function bindLongPress(el, fn){
@@ -912,7 +912,7 @@ function bind(){
   els.pinOk.addEventListener('click', tryPin);
   els.pinInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') tryPin(); });
 
-  /* Escape — закрывать оверлеи */
+  /* Escape */
   document.addEventListener('keydown', function(e){
     if (e.key !== 'Escape') return;
     if (pinOpen) return closePin();
@@ -925,10 +925,11 @@ function bind(){
 /* ============ Инициализация ============ */
 function init(){
   loadSettings();
+  els.homeKeypad.innerHTML = buildKeypadHtml();
+  els.dialpadKeypad.innerHTML = buildKeypadHtml();
   renderNumber();
-  renderRecents();
-  renderContacts();
-  switchTab('dialpad');
+  renderHome('');
+  switchTab('home');
   bind();
   try {
     if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0){
@@ -938,13 +939,13 @@ function init(){
 }
 document.addEventListener('DOMContentLoaded', init);
 
-/* Вернуться (используется хардверной кнопкой «назад», если обёртка вызывает) */
+/* Назад (для WebView-обёртки, если будет) */
 window.__handleBack = function(){
   if (pinOpen){ closePin(); return 'handled'; }
   if (settingsOpen){ closeSettings(); return 'handled'; }
   if (callActive){ hangUp(); return 'handled'; }
   if (ussdOpen){ cancelUssd(); return 'handled'; }
-  if (currentTab !== 'dialpad'){ switchTab('dialpad'); return 'handled'; }
+  if (currentTab !== 'home'){ switchTab('home'); return 'handled'; }
   if (typed){ typed = ''; renderNumber(); return 'handled'; }
   if (history.length > 1){ history.back(); return 'handled'; }
   return 'exit';
